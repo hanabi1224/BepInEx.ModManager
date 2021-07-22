@@ -28,13 +28,13 @@ jobs:
           yarn
           yarn build
       - name: Dist
-        if: secrets.GH_TOKEN != ''
+        if: ${{ secrets.VERCEL_PUBLISH_TOKEN }} != ''
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           yarn dist
       - uses: actions/upload-artifact@v2
-        if: secrets.GH_TOKEN != ''
+        if: ${{ secrets.VERCEL_PUBLISH_TOKEN }} != ''
         with:
           name: installer
           path: dist/*.exe
