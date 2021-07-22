@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package BepInEx;
+
+message ListSteamGamesRequest {
+}
+
+message ListSteamGamesResponse {
+  repeated GameInfo games = 1;
+}
+
+message GameInfo {
+    string id = 1;
+    string name = 2;
+    string path = 3;
+    bool isBIEInstalled = 4;
+    bool isBIEInitialized = 5;
+    repeated PluginInfo plugins = 10;
+    repeated PatcherInfo patchers = 11;
+}
+
+message PluginInfo {
+    string id = 1;
+    string name = 2;
+    string version = 3;
+    string path = 4;
+}
+
+message PatcherInfo {
+    string id = 1;
+    string name = 2;
+    string version = 3;
+    string path = 4;
+}

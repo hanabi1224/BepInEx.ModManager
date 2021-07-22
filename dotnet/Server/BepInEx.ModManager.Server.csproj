@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net5</TargetFramework>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine.DragonFruit" Version="0.3.0-alpha.21216.1" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.*" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.*" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.*" />
+    <PackageReference Include="Grpc.Tools" Version="2.*" PrivateAssets="All" />
+    <!--<PackageReference Include="BepinEx.Core" Version="5.*" />-->
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="../../protos/*.proto" GrpcServices="Server">
+      <Link>protos/%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Visible>true</Visible>
+    </Protobuf>
+  </ItemGroup>
+</Project>

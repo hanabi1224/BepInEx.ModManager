@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package BepInEx;
+
+import "Steam.proto";
+
+service ModManagerService {
+  rpc ListSteamGames (ListSteamGamesRequest) returns (ListSteamGamesResponse);
+}

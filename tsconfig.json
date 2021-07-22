@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "outDir": "./out/",
+        "sourceMap": true,
+        "strict": true,
+        "noImplicitReturns": false,
+        "noImplicitAny": false,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "lib": ["dom", "esnext"],
+        "target": "es5",
+        "allowJs": true,
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "lib": ["dom", "esnext"],
+    "include": ["src/**/*.ts"]
+}
