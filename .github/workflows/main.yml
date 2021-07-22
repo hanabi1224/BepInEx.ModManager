@@ -5,11 +5,11 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: windows-latest
@@ -17,19 +17,25 @@ jobs:
       matrix:
         node-version: [14.x]
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: build and dist
-      run: | 
-        yarn
-        yarn build
-        yarn dist
-    - uses: actions/upload-artifact@v2
-      with:
-        name: installer
-        path: dist/*.exe
-        if-no-files-found: error
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - name: Build
+        run: |
+          yarn
+          yarn build
+      - name: Dist
+        if: secrets.GH_TOKEN != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          yarn dist
+      - uses: actions/upload-artifact@v2
+        if: secrets.GH_TOKEN != ''
+        with:
+          name: installer
+          path: dist/*.exe
+          if-no-files-found: error
