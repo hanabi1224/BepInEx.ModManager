@@ -9,7 +9,7 @@ const cwd = process.cwd();
 logger.info(cwd);
 logger.info(__dirname);
 process.chdir(path.join(cwd, 'out', 'server'))
-spawn("BepInEx.ModManager.Server.exe", `--port ${serverPort}`.split(' '))
+spawn("BepInEx.ModManager.Server", `--port ${serverPort}`.split(' '))
 process.chdir(cwd)
 
 autoUpdater.logger = logger;
