@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using BepInEx.ModManager.Shared;
 using Newtonsoft.Json;
 
@@ -12,6 +9,11 @@ namespace BepInEx.ModManager.DllReader
 {
     public static class Program
     {
+        static Program()
+        {
+            _ = typeof(BepInPlugin);
+        }
+
         public static void Main(string path)
         {
             if (!File.Exists(path))
@@ -19,17 +21,25 @@ namespace BepInEx.ModManager.DllReader
                 throw new FileNotFoundException($"{path}");
             }
 
-            var appDomain = AppDomain.CurrentDomain;
-            var assemblyName = AssemblyName.GetAssemblyName(path);
-            var assembly = appDomain.Load(assemblyName);
+            AppDomain appDomain = AppDomain.CurrentDomain;
+            Assembly assembly;
             try
             {
-                foreach (var t in assembly.DefinedTypes)
+                AssemblyName assemblyName = AssemblyName.GetAssemblyName(path);
+                assembly = appDomain.Load(assemblyName);
+            }
+            catch
+            {
+                assembly = Assembly.ReflectionOnlyLoadFrom(path);
+            }
+            try
+            {
+                foreach (TypeInfo t in assembly.DefinedTypes)
                 {
-                    var pluginAttribute = t.GetCustomAttribute<BepInPlugin>();
+                    BepInPlugin pluginAttribute = t.GetCustomAttribute<BepInPlugin>();
                     if (pluginAttribute != null)
                     {
-                        var pluginInfo = new BepInExAssemblyInfo
+                        BepInExAssemblyInfo pluginInfo = new BepInExAssemblyInfo
                         {
                             Type = BepInExAssemblyType.Plugin,
                             Id = pluginAttribute.GUID,
@@ -44,11 +54,32 @@ namespace BepInEx.ModManager.DllReader
             catch (ReflectionTypeLoadException rtle)
             {
 #if DEBUG
-                foreach (var e in rtle.LoaderExceptions)
+                foreach (Exception e in rtle.LoaderExceptions)
                 {
                     Console.Error.WriteLine(e);
                 }
 #endif
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                Console.Error.WriteLine(e);
+#endif
+            }
+            {
+                Match match = Regex.Match(assembly.FullName, @"Version=(?<version>.+?),", RegexOptions.Compiled);
+                if (match.Success && Version.TryParse(match.Groups["version"].Value.Trim(), out Version version))
+                {
+                    string name = Path.GetFileNameWithoutExtension(path);
+                    BepInExAssemblyInfo pluginInfo = new BepInExAssemblyInfo
+                    {
+                        Type = BepInExAssemblyType.Unknown,
+                        Id = name,
+                        Name = name,
+                        Version = version.ToString(),
+                    };
+                    Console.WriteLine(JsonConvert.SerializeObject(pluginInfo));
+                }
             }
         }
     }

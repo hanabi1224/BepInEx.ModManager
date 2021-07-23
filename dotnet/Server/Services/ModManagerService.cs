@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BepInEx.ModManager.Shared;
 using Grpc.Core;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 
 namespace BepInEx.ModManager.Server.Services
@@ -18,8 +13,8 @@ namespace BepInEx.ModManager.Server.Services
     {
         public override async Task<ListSteamGamesResponse> ListSteamGames(ListSteamGamesRequest request, ServerCallContext context)
         {
-            var response = new ListSteamGamesResponse();
-            await foreach (var g in GetSteamGamesAsync())
+            ListSteamGamesResponse response = new ListSteamGamesResponse();
+            await foreach (GameInfo g in GetSteamGamesAsync())
             {
                 response.Games.Add(g);
             }
@@ -28,8 +23,8 @@ namespace BepInEx.ModManager.Server.Services
 
         public override async Task<CommonServiceResponse> InstallBIE(InstallBIERequest request, ServerCallContext context)
         {
-            var unityPlayerPath = Path.Combine(request.Path, Constants.UnityPlayer);
-            var is64bit = await FileTool.Is64BitAsync(unityPlayerPath).ConfigureAwait(false);
+            string unityPlayerPath = Path.Combine(request.Path, Constants.UnityPlayer);
+            bool is64bit = await FileTool.Is64BitAsync(unityPlayerPath).ConfigureAwait(false);
             await InstallationUtils.InstallBIEAsync(request.Path, is64bit).ConfigureAwait(false);
             // Install
             return new CommonServiceResponse
@@ -45,7 +40,7 @@ namespace BepInEx.ModManager.Server.Services
 
         public static async IAsyncEnumerable<GameInfo> GetSteamGamesAsync()
         {
-            var uninstallEntry = Registry.LocalMachine
+            RegistryKey uninstallEntry = Registry.LocalMachine
                 .OpenSubKey("SOFTWARE")?
                 .OpenSubKey("Microsoft")?
                 .OpenSubKey("Windows")?
@@ -53,11 +48,11 @@ namespace BepInEx.ModManager.Server.Services
                 .OpenSubKey("Uninstall");
             if (uninstallEntry != null)
             {
-                foreach (var subKey in uninstallEntry.GetSubKeyNames())
+                foreach (string subKey in uninstallEntry.GetSubKeyNames())
                 {
                     if (subKey.StartsWith("Steam App"))
                     {
-                        var gameInfo = await ReadGameInfoAsync(uninstallEntry, subKey);
+                        GameInfo gameInfo = await ReadGameInfoAsync(uninstallEntry, subKey);
                         if (gameInfo != null)
                         {
                             yield return gameInfo;
@@ -73,14 +68,14 @@ namespace BepInEx.ModManager.Server.Services
             {
                 return null;
             }
-            var entry = uninstallEntry.OpenSubKey(subKey);
-            var path = entry.GetValue("InstallLocation") as string;
+            RegistryKey entry = uninstallEntry.OpenSubKey(subKey);
+            string path = entry.GetValue("InstallLocation") as string;
             if (!Directory.Exists(path))
             {
                 // TODO: Fix this hack, encoding should not be hard coded.
                 path = Encoding.UTF8.GetString(Encoding.GetEncoding("gbk").GetBytes(path));
             }
-            var name = entry.GetValue("DisplayName") as string;
+            string name = entry.GetValue("DisplayName") as string;
             if (!string.IsNullOrEmpty(name) && !Directory.Exists(path))
             {
                 path = Path.Combine(Path.GetDirectoryName(path), name);
@@ -93,12 +88,12 @@ namespace BepInEx.ModManager.Server.Services
             {
                 name = Path.GetFileName(path);
             }
-            var unityPlayerPath = Path.Combine(path, Constants.UnityPlayer);
+            string unityPlayerPath = Path.Combine(path, Constants.UnityPlayer);
             if (!File.Exists(unityPlayerPath))
             {
                 return null;
             }
-            var gameInfo = new GameInfo
+            GameInfo gameInfo = new GameInfo
             {
                 Id = Regex.Match(subKey, @"\d+", RegexOptions.Compiled).Value,
                 Name = name,
@@ -109,13 +104,13 @@ namespace BepInEx.ModManager.Server.Services
             };
             if (gameInfo.IsBIEInstalled)
             {
-                var plguinDir = Path.Combine(Path.Combine(path, "BepInEx", "plugins"));
-                var tasks = new List<Task>();
+                string plguinDir = Path.Combine(Path.Combine(path, "BepInEx", "plugins"));
+                List<Task> tasks = new List<Task>();
                 if (Directory.Exists(plguinDir))
                 {
-                    foreach (var plugin in Directory.EnumerateFiles(plguinDir, "*.dll", SearchOption.AllDirectories))
+                    foreach (string plugin in Directory.EnumerateFiles(plguinDir, "*.dll", SearchOption.AllDirectories))
                     {
-                        var pluginInfo = new PluginInfo
+                        PluginInfo pluginInfo = new PluginInfo
                         {
                             Id = Path.GetFileNameWithoutExtension(plugin),
                             Path = plugin,
@@ -127,8 +122,8 @@ namespace BepInEx.ModManager.Server.Services
                         // Use a different way to extract assembly info instead, maybe ILSpy.
                         tasks.Add(Task.Run(async () =>
                         {
-                            var dllInfo = await FileTool.ReadDllInfoAsync(plugin).ConfigureAwait(false);
-                            if (dllInfo.Type == BepInExAssemblyType.Plugin)
+                            BepInExAssemblyInfo dllInfo = await FileTool.ReadDllInfoAsync(plugin).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(dllInfo?.Id))
                             {
                                 pluginInfo.Id = dllInfo.Id;
                                 pluginInfo.Name = dllInfo.Name;
@@ -140,12 +135,12 @@ namespace BepInEx.ModManager.Server.Services
                 await Task.WhenAll(tasks).ConfigureAwait(false);
             }
 
-            var patcherDir = Path.Combine(Path.Combine(path, "BepInEx", "patchers"));
+            string patcherDir = Path.Combine(Path.Combine(path, "BepInEx", "patchers"));
             if (Directory.Exists(patcherDir))
             {
-                foreach (var patcher in Directory.EnumerateFiles(patcherDir, "*.dll", SearchOption.AllDirectories))
+                foreach (string patcher in Directory.EnumerateFiles(patcherDir, "*.dll", SearchOption.AllDirectories))
                 {
-                    var patchInfo = new PatcherInfo
+                    PatcherInfo patchInfo = new PatcherInfo
                     {
                         Name = Path.GetFileNameWithoutExtension(patcher),
                         Path = patcher,

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 
 namespace BepInEx.ModManager.Server
 {
@@ -10,7 +6,7 @@ namespace BepInEx.ModManager.Server
     {
         public static T GetValue<T>(this RegistryKey baseKey, string subKey, string name)
         {
-            var entry = baseKey.OpenSubKey(subKey);
+            RegistryKey entry = baseKey.OpenSubKey(subKey);
             if (entry != null)
             {
                 return (T)entry.GetValue(name);

@@ -13,15 +13,17 @@ namespace BepInEx.ModManager.Server
         private static readonly HttpClient s_client = new HttpClient();
         public static async Task<string> GetLatestBIEDownloadUrlAsync(bool is64bit)
         {
-            var html = new HtmlDocument();
+            HtmlDocument html = new HtmlDocument();
             html.Load(await s_client.GetStreamAsync(Constants.BepInExLatestReleasePage).ConfigureAwait(false));
-            var anchors = html.DocumentNode.SelectNodes("//a");
-            var toContain = is64bit ? "BepInEx_x64" : "BepInEx_x86";
-            var href = anchors.Select(a => a.GetAttributeValue("href", string.Empty)).FirstOrDefault(h => h.Contains(".zip", StringComparison.OrdinalIgnoreCase) && h.Contains(toContain, StringComparison.OrdinalIgnoreCase));
+            HtmlNodeCollection anchors = html.DocumentNode.SelectNodes("//a");
+            string toContain = is64bit ? "BepInEx_x64" : "BepInEx_x86";
+            string href = anchors.Select(a => a.GetAttributeValue("href", string.Empty)).FirstOrDefault(h => h.Contains(".zip", StringComparison.OrdinalIgnoreCase) && h.Contains(toContain, StringComparison.OrdinalIgnoreCase));
             if (!string.IsNullOrEmpty(href) && href.StartsWith("/"))
             {
-                var ub = new UriBuilder(Constants.BepInExLatestReleasePage);
-                ub.Path = href;
+                UriBuilder ub = new UriBuilder(Constants.BepInExLatestReleasePage)
+                {
+                    Path = href
+                };
                 href = ub.ToString();
             }
 
@@ -30,19 +32,19 @@ namespace BepInEx.ModManager.Server
 
         public static async Task InstallBIEAsync(string path, bool is64bit)
         {
-            var zipUrl = await GetLatestBIEDownloadUrlAsync(is64bit).ConfigureAwait(false);
-            var zipStream = await s_client.GetStreamAsync(zipUrl).ConfigureAwait(false);
-            using var zip = new ZipArchive(zipStream);
-            foreach (var entry in zip.Entries)
+            string zipUrl = await GetLatestBIEDownloadUrlAsync(is64bit).ConfigureAwait(false);
+            Stream zipStream = await s_client.GetStreamAsync(zipUrl).ConfigureAwait(false);
+            using ZipArchive zip = new ZipArchive(zipStream);
+            foreach (ZipArchiveEntry entry in zip.Entries)
             {
-                var targetPath = Path.Combine(path, entry.FullName);
-                var targetPathDir = Path.GetDirectoryName(targetPath);
+                string targetPath = Path.Combine(path, entry.FullName);
+                string targetPathDir = Path.GetDirectoryName(targetPath);
                 if (!Directory.Exists(targetPathDir))
                 {
                     Directory.CreateDirectory(targetPathDir);
                 }
-                using var fileStream = File.OpenWrite(targetPath);
-                using var entryStream = entry.Open();                
+                using FileStream fileStream = File.OpenWrite(targetPath);
+                using Stream entryStream = entry.Open();
                 await entryStream.CopyToAsync(fileStream).ConfigureAwait(false);
             }
         }
