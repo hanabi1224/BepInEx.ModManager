@@ -23,9 +23,9 @@ export class ModManagerServiceClient {
   credentials_: null | { [index: string]: string; };
   options_: null | { [index: string]: any; };
 
-  constructor(hostname: string,
-    credentials?: null | { [index: string]: string; },
-    options?: null | { [index: string]: any; }) {
+  constructor (hostname: string,
+               credentials?: null | { [index: string]: string; },
+               options?: null | { [index: string]: any; }) {
     if (!options) options = {};
     if (!credentials) credentials = {};
     options['format'] = 'text';
@@ -52,28 +52,28 @@ export class ModManagerServiceClient {
     request: Steam_pb.ListSteamGamesRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.Error,
-      response: Steam_pb.ListSteamGamesResponse) => void): grpcWeb.ClientReadableStream<Steam_pb.ListSteamGamesResponse>;
+               response: Steam_pb.ListSteamGamesResponse) => void): grpcWeb.ClientReadableStream<Steam_pb.ListSteamGamesResponse>;
 
   listSteamGames(
     request: Steam_pb.ListSteamGamesRequest,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.Error,
-      response: Steam_pb.ListSteamGamesResponse) => void) {
+               response: Steam_pb.ListSteamGamesResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
-        '/BepInEx.ModManagerService/ListSteamGames',
+          '/BepInEx.ModManagerService/ListSteamGames',
         request,
         metadata || {},
         this.methodInfoListSteamGames,
         callback);
     }
     return this.client_.unaryCall(
-      this.hostname_ +
+    this.hostname_ +
       '/BepInEx.ModManagerService/ListSteamGames',
-      request,
-      metadata || {},
-      this.methodInfoListSteamGames);
+    request,
+    metadata || {},
+    this.methodInfoListSteamGames);
   }
 
   methodInfoInstallBIE = new grpcWeb.AbstractClientBase.MethodInfo(
@@ -92,28 +92,28 @@ export class ModManagerServiceClient {
     request: Steam_pb.InstallBIERequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.Error,
-      response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
+               response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   installBIE(
     request: Steam_pb.InstallBIERequest,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.Error,
-      response: Common_pb.CommonServiceResponse) => void) {
+               response: Common_pb.CommonServiceResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
-        '/BepInEx.ModManagerService/InstallBIE',
+          '/BepInEx.ModManagerService/InstallBIE',
         request,
         metadata || {},
         this.methodInfoInstallBIE,
         callback);
     }
     return this.client_.unaryCall(
-      this.hostname_ +
+    this.hostname_ +
       '/BepInEx.ModManagerService/InstallBIE',
-      request,
-      metadata || {},
-      this.methodInfoInstallBIE);
+    request,
+    metadata || {},
+    this.methodInfoInstallBIE);
   }
 
   methodInfoUninstallBIE = new grpcWeb.AbstractClientBase.MethodInfo(
@@ -132,28 +132,28 @@ export class ModManagerServiceClient {
     request: Steam_pb.UninstallBIERequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.Error,
-      response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
+               response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   uninstallBIE(
     request: Steam_pb.UninstallBIERequest,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.Error,
-      response: Common_pb.CommonServiceResponse) => void) {
+               response: Common_pb.CommonServiceResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
-        '/BepInEx.ModManagerService/UninstallBIE',
+          '/BepInEx.ModManagerService/UninstallBIE',
         request,
         metadata || {},
         this.methodInfoUninstallBIE,
         callback);
     }
     return this.client_.unaryCall(
-      this.hostname_ +
+    this.hostname_ +
       '/BepInEx.ModManagerService/UninstallBIE',
-      request,
-      metadata || {},
-      this.methodInfoUninstallBIE);
+    request,
+    metadata || {},
+    this.methodInfoUninstallBIE);
   }
 
 }

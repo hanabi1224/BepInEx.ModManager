@@ -33,11 +33,14 @@
     "lint-fix": "yarn eslint --fix src/ --ext .ts,.js,.vue"
   },
   "dependencies": {
+    "ant-design-vue": "^1.7.6",
     "electron-log": "^4.3.5",
     "electron-updater": "^4.3.9",
+    "element-ui": "^2.15.3",
     "google-protobuf": "^3.17.3",
     "grpc-web": "^1.2.1",
     "i18next": "^20.3.4",
+    "lodash": "^4.17.21",
     "vue": "^2.6.14",
     "vue-class-component": "^7.2.6",
     "vue-hot-reload-api": "^2.3.4",
@@ -47,6 +50,7 @@
   "devDependencies": {
     "@babel/core": "^7.14.8",
     "@babel/preset-env": "^7.14.8",
+    "@types/lodash": "^4.14.171",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
     "@vue/component-compiler-utils": "^3.2.2",

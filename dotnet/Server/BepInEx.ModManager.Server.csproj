@@ -6,11 +6,20 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.*" />
     <PackageReference Include="HtmlAgilityPack" Version="1.*" />
+    <PackageReference Include="NLog" Version="4.*" />
+    <PackageReference Include="NLog.Schema" Version="4.*" PrivateAssets="all" />
+    <PackageReference Include="System.Drawing.Common" Version="5.*" />
+    <PackageReference Include="YamlDotNet" Version="11.*" />
     <PackageReference Include="System.CommandLine.DragonFruit" Version="0.3.0-alpha.*" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.*" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.*" />
     <PackageReference Include="Grpc.AspNetCore.Web" Version="2.*" />
     <PackageReference Include="Grpc.Tools" Version="2.*" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="../../protos/*.proto" GrpcServices="Server">

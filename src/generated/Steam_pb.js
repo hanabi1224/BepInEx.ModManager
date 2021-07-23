@@ -436,7 +436,7 @@ proto.BepInEx.ListSteamGamesResponse.prototype.clearGamesList = function() {
  * @private {!Array<number>}
  * @const
  */
-proto.BepInEx.GameInfo.repeatedFields_ = [10,11];
+proto.BepInEx.GameInfo.repeatedFields_ = [21,22];
 
 
 
@@ -473,8 +473,9 @@ proto.BepInEx.GameInfo.toObject = function(includeInstance, msg) {
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     path: jspb.Message.getFieldWithDefault(msg, 3, ""),
     is64bit: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
-    isbieinstalled: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
-    isbieinitialized: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
+    icon: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    isbieinstalled: jspb.Message.getBooleanFieldWithDefault(msg, 11, false),
+    isbieinitialized: jspb.Message.getBooleanFieldWithDefault(msg, 12, false),
     pluginsList: jspb.Message.toObjectList(msg.getPluginsList(),
     proto.BepInEx.PluginInfo.toObject, includeInstance),
     patchersList: jspb.Message.toObjectList(msg.getPatchersList(),
@@ -532,19 +533,23 @@ proto.BepInEx.GameInfo.deserializeBinaryFromReader = function(msg, reader) {
       msg.setIs64bit(value);
       break;
     case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIcon(value);
+      break;
+    case 11:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIsbieinstalled(value);
       break;
-    case 6:
+    case 12:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIsbieinitialized(value);
       break;
-    case 10:
+    case 21:
       var value = new proto.BepInEx.PluginInfo;
       reader.readMessage(value,proto.BepInEx.PluginInfo.deserializeBinaryFromReader);
       msg.addPlugins(value);
       break;
-    case 11:
+    case 22:
       var value = new proto.BepInEx.PatcherInfo;
       reader.readMessage(value,proto.BepInEx.PatcherInfo.deserializeBinaryFromReader);
       msg.addPatchers(value);
@@ -606,24 +611,31 @@ proto.BepInEx.GameInfo.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getIcon();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
   f = message.getIsbieinstalled();
   if (f) {
     writer.writeBool(
-      5,
+      11,
       f
     );
   }
   f = message.getIsbieinitialized();
   if (f) {
     writer.writeBool(
-      6,
+      12,
       f
     );
   }
   f = message.getPluginsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      10,
+      21,
       f,
       proto.BepInEx.PluginInfo.serializeBinaryToWriter
     );
@@ -631,7 +643,7 @@ proto.BepInEx.GameInfo.serializeBinaryToWriter = function(message, writer) {
   f = message.getPatchersList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      11,
+      22,
       f,
       proto.BepInEx.PatcherInfo.serializeBinaryToWriter
     );
@@ -712,11 +724,29 @@ proto.BepInEx.GameInfo.prototype.setIs64bit = function(value) {
 
 
 /**
- * optional bool isBIEInstalled = 5;
+ * optional string icon = 5;
+ * @return {string}
+ */
+proto.BepInEx.GameInfo.prototype.getIcon = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.BepInEx.GameInfo} returns this
+ */
+proto.BepInEx.GameInfo.prototype.setIcon = function(value) {
+  return jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional bool isBIEInstalled = 11;
  * @return {boolean}
  */
 proto.BepInEx.GameInfo.prototype.getIsbieinstalled = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 11, false));
 };
 
 
@@ -725,16 +755,16 @@ proto.BepInEx.GameInfo.prototype.getIsbieinstalled = function() {
  * @return {!proto.BepInEx.GameInfo} returns this
  */
 proto.BepInEx.GameInfo.prototype.setIsbieinstalled = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 5, value);
+  return jspb.Message.setProto3BooleanField(this, 11, value);
 };
 
 
 /**
- * optional bool isBIEInitialized = 6;
+ * optional bool isBIEInitialized = 12;
  * @return {boolean}
  */
 proto.BepInEx.GameInfo.prototype.getIsbieinitialized = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 12, false));
 };
 
 
@@ -743,17 +773,17 @@ proto.BepInEx.GameInfo.prototype.getIsbieinitialized = function() {
  * @return {!proto.BepInEx.GameInfo} returns this
  */
 proto.BepInEx.GameInfo.prototype.setIsbieinitialized = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 6, value);
+  return jspb.Message.setProto3BooleanField(this, 12, value);
 };
 
 
 /**
- * repeated PluginInfo plugins = 10;
+ * repeated PluginInfo plugins = 21;
  * @return {!Array<!proto.BepInEx.PluginInfo>}
  */
 proto.BepInEx.GameInfo.prototype.getPluginsList = function() {
   return /** @type{!Array<!proto.BepInEx.PluginInfo>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.BepInEx.PluginInfo, 10));
+    jspb.Message.getRepeatedWrapperField(this, proto.BepInEx.PluginInfo, 21));
 };
 
 
@@ -762,7 +792,7 @@ proto.BepInEx.GameInfo.prototype.getPluginsList = function() {
  * @return {!proto.BepInEx.GameInfo} returns this
 */
 proto.BepInEx.GameInfo.prototype.setPluginsList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 10, value);
+  return jspb.Message.setRepeatedWrapperField(this, 21, value);
 };
 
 
@@ -772,7 +802,7 @@ proto.BepInEx.GameInfo.prototype.setPluginsList = function(value) {
  * @return {!proto.BepInEx.PluginInfo}
  */
 proto.BepInEx.GameInfo.prototype.addPlugins = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 10, opt_value, proto.BepInEx.PluginInfo, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 21, opt_value, proto.BepInEx.PluginInfo, opt_index);
 };
 
 
@@ -786,12 +816,12 @@ proto.BepInEx.GameInfo.prototype.clearPluginsList = function() {
 
 
 /**
- * repeated PatcherInfo patchers = 11;
+ * repeated PatcherInfo patchers = 22;
  * @return {!Array<!proto.BepInEx.PatcherInfo>}
  */
 proto.BepInEx.GameInfo.prototype.getPatchersList = function() {
   return /** @type{!Array<!proto.BepInEx.PatcherInfo>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.BepInEx.PatcherInfo, 11));
+    jspb.Message.getRepeatedWrapperField(this, proto.BepInEx.PatcherInfo, 22));
 };
 
 
@@ -800,7 +830,7 @@ proto.BepInEx.GameInfo.prototype.getPatchersList = function() {
  * @return {!proto.BepInEx.GameInfo} returns this
 */
 proto.BepInEx.GameInfo.prototype.setPatchersList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 11, value);
+  return jspb.Message.setRepeatedWrapperField(this, 22, value);
 };
 
 
@@ -810,7 +840,7 @@ proto.BepInEx.GameInfo.prototype.setPatchersList = function(value) {
  * @return {!proto.BepInEx.PatcherInfo}
  */
 proto.BepInEx.GameInfo.prototype.addPatchers = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 11, opt_value, proto.BepInEx.PatcherInfo, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 22, opt_value, proto.BepInEx.PatcherInfo, opt_index);
 };
 
 

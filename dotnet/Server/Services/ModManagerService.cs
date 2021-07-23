@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -102,6 +105,22 @@ namespace BepInEx.ModManager.Server.Services
                 IsBIEInstalled = Directory.Exists(Path.Combine(path, "BepInEx")),
                 IsBIEInitialized = File.Exists(Path.Combine(path, "BepInEx", "config", "BepInEx.cfg")),
             };
+
+            foreach (string exe in Directory.EnumerateFiles(path, "*.exe", SearchOption.TopDirectoryOnly))
+            {
+                if (!exe.Contains("unity", StringComparison.OrdinalIgnoreCase))
+                {
+                    using var icon = Icon.ExtractAssociatedIcon(exe);
+                    using var ms = new MemoryStream();
+                    using (var bmp = icon.ToBitmap())
+                    {
+                        bmp.Save(ms, ImageFormat.Png);
+                    }
+                    gameInfo.Icon = $"data:image/png;base64,{Convert.ToBase64String(ms.ToArray())}";
+                    break;
+                }
+            }
+
             if (gameInfo.IsBIEInstalled)
             {
                 string plguinDir = Path.Combine(Path.Combine(path, "BepInEx", "plugins"));

@@ -14,10 +14,11 @@ message GameInfo {
     string name = 2;
     string path = 3;
     bool is64bit = 4;
-    bool isBIEInstalled = 5;
-    bool isBIEInitialized = 6;
-    repeated PluginInfo plugins = 10;
-    repeated PatcherInfo patchers = 11;
+    string icon = 5;
+    bool isBIEInstalled = 11;
+    bool isBIEInitialized = 12;
+    repeated PluginInfo plugins = 21;
+    repeated PatcherInfo patchers = 22;
 }
 
 message PluginInfo {

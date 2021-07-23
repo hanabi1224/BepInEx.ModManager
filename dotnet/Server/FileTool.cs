@@ -4,11 +4,14 @@ using System.IO;
 using System.Threading.Tasks;
 using BepInEx.ModManager.Shared;
 using Newtonsoft.Json;
+using NLog;
 
 namespace BepInEx.ModManager.Server
 {
     public static class FileTool
     {
+        private static Logger Logger { get; } = LogManager.GetCurrentClassLogger();
+
         public static async Task<bool> Is64BitAsync(string file)
         {
             string pwd = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "file", "bin");
@@ -63,7 +66,7 @@ namespace BepInEx.ModManager.Server
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine(e);
+                Logger.Error(e);
             }
 
             return new BepInExAssemblyInfo { Type = BepInExAssemblyType.Unknown };

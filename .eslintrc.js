@@ -26,6 +26,7 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     'no-inner-declarations': 'off',
+    'vue/html-self-closing': 'off',
   },
   parserOptions: {
     parser: '@typescript-eslint/parser',

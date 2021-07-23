@@ -49,6 +49,9 @@ export class GameInfo extends jspb.Message {
   getIs64bit(): boolean;
   setIs64bit(value: boolean): GameInfo;
 
+  getIcon(): string;
+  setIcon(value: string): GameInfo;
+
   getIsbieinstalled(): boolean;
   setIsbieinstalled(value: boolean): GameInfo;
 
@@ -79,6 +82,7 @@ export namespace GameInfo {
     name: string,
     path: string,
     is64bit: boolean,
+    icon: string,
     isbieinstalled: boolean,
     isbieinitialized: boolean,
     pluginsList: Array<PluginInfo.AsObject>,
