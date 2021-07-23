@@ -32,6 +32,6 @@
     <ProjectReference Include="..\Shared\BepInEx.ModManager.Shared.csproj" />
   </ItemGroup>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="dotnet publish -c Release ../DllReader" />
+    <Exec Command="dotnet publish -c Release $(ProjectDir)../DllReader" />
   </Target>
 </Project>
