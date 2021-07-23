@@ -13,8 +13,9 @@ message GameInfo {
     string id = 1;
     string name = 2;
     string path = 3;
-    bool isBIEInstalled = 4;
-    bool isBIEInitialized = 5;
+    bool is64bit = 4;
+    bool isBIEInstalled = 5;
+    bool isBIEInitialized = 6;
     repeated PluginInfo plugins = 10;
     repeated PatcherInfo patchers = 11;
 }
@@ -31,4 +32,13 @@ message PatcherInfo {
     string name = 2;
     string version = 3;
     string path = 4;
+}
+
+message InstallBIERequest {
+    string path = 1;
+    bool force = 2;
+}
+
+message UninstallBIERequest {
+    string path = 1;
 }

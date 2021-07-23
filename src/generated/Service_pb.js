@@ -15,5 +15,7 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
+var Common_pb = require('./Common_pb.js');
+goog.object.extend(proto, Common_pb);
 var Steam_pb = require('./Steam_pb.js');
 goog.object.extend(proto, Steam_pb);

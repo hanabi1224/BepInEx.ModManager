@@ -46,6 +46,9 @@ export class GameInfo extends jspb.Message {
   getPath(): string;
   setPath(value: string): GameInfo;
 
+  getIs64bit(): boolean;
+  setIs64bit(value: boolean): GameInfo;
+
   getIsbieinstalled(): boolean;
   setIsbieinstalled(value: boolean): GameInfo;
 
@@ -75,6 +78,7 @@ export namespace GameInfo {
     id: string,
     name: string,
     path: string,
+    is64bit: boolean,
     isbieinstalled: boolean,
     isbieinitialized: boolean,
     pluginsList: Array<PluginInfo.AsObject>,
@@ -138,6 +142,46 @@ export namespace PatcherInfo {
     id: string,
     name: string,
     version: string,
+    path: string,
+  }
+}
+
+export class InstallBIERequest extends jspb.Message {
+  getPath(): string;
+  setPath(value: string): InstallBIERequest;
+
+  getForce(): boolean;
+  setForce(value: boolean): InstallBIERequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): InstallBIERequest.AsObject;
+  static toObject(includeInstance: boolean, msg: InstallBIERequest): InstallBIERequest.AsObject;
+  static serializeBinaryToWriter(message: InstallBIERequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): InstallBIERequest;
+  static deserializeBinaryFromReader(message: InstallBIERequest, reader: jspb.BinaryReader): InstallBIERequest;
+}
+
+export namespace InstallBIERequest {
+  export type AsObject = {
+    path: string,
+    force: boolean,
+  }
+}
+
+export class UninstallBIERequest extends jspb.Message {
+  getPath(): string;
+  setPath(value: string): UninstallBIERequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): UninstallBIERequest.AsObject;
+  static toObject(includeInstance: boolean, msg: UninstallBIERequest): UninstallBIERequest.AsObject;
+  static serializeBinaryToWriter(message: UninstallBIERequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): UninstallBIERequest;
+  static deserializeBinaryFromReader(message: UninstallBIERequest, reader: jspb.BinaryReader): UninstallBIERequest;
+}
+
+export namespace UninstallBIERequest {
+  export type AsObject = {
     path: string,
   }
 }

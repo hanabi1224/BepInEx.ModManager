@@ -18,14 +18,31 @@ namespace BepInEx.ModManager.Server.Services
         public override async Task<ListSteamGamesResponse> ListSteamGames(ListSteamGamesRequest request, ServerCallContext context)
         {
             var response = new ListSteamGamesResponse();
-            foreach (var g in GetSteamGames())
+            await foreach (var g in GetSteamGamesAsync())
             {
                 response.Games.Add(g);
             }
             return response;
         }
 
-        public static IEnumerable<GameInfo> GetSteamGames()
+        public override async Task<CommonServiceResponse> InstallBIE(InstallBIERequest request, ServerCallContext context)
+        {
+            var unityPlayerPath = Path.Combine(request.Path, Constants.UnityPlayer);
+            var is64bit = await FileTool.Is64BitAsync(unityPlayerPath).ConfigureAwait(false);
+            await InstallationUtils.InstallBIEAsync(request.Path, is64bit).ConfigureAwait(false);
+            // Install
+            return new CommonServiceResponse
+            {
+                Success = true,
+            };
+        }
+
+        public override Task<CommonServiceResponse> UninstallBIE(UninstallBIERequest request, ServerCallContext context)
+        {
+            return base.UninstallBIE(request, context);
+        }
+
+        public static async IAsyncEnumerable<GameInfo> GetSteamGamesAsync()
         {
             var uninstallEntry = Registry.LocalMachine
                 .OpenSubKey("SOFTWARE")?
@@ -59,11 +76,17 @@ namespace BepInEx.ModManager.Server.Services
                         {
                             name = Path.GetFileName(path);
                         }
+                        var unityPlayerPath = Path.Combine(path, Constants.UnityPlayer);
+                        if (!File.Exists(unityPlayerPath))
+                        {
+                            continue;
+                        }
                         var gameInfo = new GameInfo
                         {
                             Id = Regex.Match(subKey, @"\d+").Value,
                             Name = name,
                             Path = path,
+                            Is64Bit = await FileTool.Is64BitAsync(unityPlayerPath).ConfigureAwait(false),
                             IsBIEInstalled = Directory.Exists(Path.Combine(path, "BepInEx")),
                             IsBIEInitialized = File.Exists(Path.Combine(path, "BepInEx", "config", "BepInEx.cfg")),
                         };

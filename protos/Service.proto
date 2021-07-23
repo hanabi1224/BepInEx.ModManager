@@ -2,8 +2,15 @@ syntax = "proto3";
 
 package BepInEx;
 
+import "Common.proto";
 import "Steam.proto";
 
 service ModManagerService {
+
   rpc ListSteamGames (ListSteamGamesRequest) returns (ListSteamGamesResponse);
+
+  rpc InstallBIE (InstallBIERequest) returns (CommonServiceResponse);
+
+  rpc UninstallBIE (UninstallBIERequest) returns (CommonServiceResponse);
+
 }
