@@ -23,10 +23,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - name: Build
-        run: |
-          yarn
-          yarn build
+      - run: dotnet build -c Release dotnet
+      - run: dotnet test -c Release dotnet
+      - run: yarn
+      - run: yarn build
       - name: Dist
         if: ${{ env.GH_TOKEN }} != ''
         env:
