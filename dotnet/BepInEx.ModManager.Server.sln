@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BepInEx.ModManager.Server", "Server\BepInEx.ModManager.Server.csproj", "{3A7E876F-595B-47F1-AEED-10615023598A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BepInEx.ModManager.Shared", "Shared\BepInEx.ModManager.Shared.csproj", "{72A35A1E-59CC-48EF-B024-5F9DBFB33A71}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BepInEx.ModManager.DllReader", "DllReader\BepInEx.ModManager.DllReader.csproj", "{BFC11B6C-854E-4607-8032-1BCE48D6A508}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{3A7E876F-595B-47F1-AEED-10615023598A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A7E876F-595B-47F1-AEED-10615023598A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A7E876F-595B-47F1-AEED-10615023598A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72A35A1E-59CC-48EF-B024-5F9DBFB33A71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72A35A1E-59CC-48EF-B024-5F9DBFB33A71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72A35A1E-59CC-48EF-B024-5F9DBFB33A71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72A35A1E-59CC-48EF-B024-5F9DBFB33A71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFC11B6C-854E-4607-8032-1BCE48D6A508}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFC11B6C-854E-4607-8032-1BCE48D6A508}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFC11B6C-854E-4607-8032-1BCE48D6A508}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFC11B6C-854E-4607-8032-1BCE48D6A508}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -18,7 +18,9 @@ namespace BepInEx.ModManager.Server
 
         public static async Task Main(int port = 40003)
         {
-            // await foreach (var x in ModManagerServiceImpl.GetSteamGamesAsync()) { }
+#if DEBUG
+            await foreach (var x in ModManagerServiceImpl.GetSteamGamesAsync()) { }
+#endif
             await CreateHostBuilder(port).Build().RunAsync().ConfigureAwait(false);
         }
 

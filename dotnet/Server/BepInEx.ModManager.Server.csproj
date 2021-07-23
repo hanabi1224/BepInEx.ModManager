@@ -4,13 +4,13 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.*" />
     <PackageReference Include="HtmlAgilityPack" Version="1.*" />
-    <PackageReference Include="System.CommandLine.DragonFruit" Version="0.3.0-alpha.21216.1" />
+    <PackageReference Include="System.CommandLine.DragonFruit" Version="0.3.0-alpha.*" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.*" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.*" />
     <PackageReference Include="Grpc.AspNetCore.Web" Version="2.*" />
     <PackageReference Include="Grpc.Tools" Version="2.*" PrivateAssets="All" />
-    <!--<PackageReference Include="BepinEx.Core" Version="5.*" />-->
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="../../protos/*.proto" GrpcServices="Server">
@@ -22,5 +22,16 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Visible>true</Visible>      
     </None>
+    <None Include="../DllReader/bin/Release/net462/publish/**/*">
+      <Link>dllreader/%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Visible>true</Visible>
+    </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\BepInEx.ModManager.Shared.csproj" />
+  </ItemGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="dotnet publish -c Release ../DllReader" />
+  </Target>
 </Project>

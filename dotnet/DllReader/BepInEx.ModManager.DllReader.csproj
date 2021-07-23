@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.*" />
+    <PackageReference Include="System.CommandLine.DragonFruit" Version="0.3.0-alpha.*" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.*" />
+    <PackageReference Include="BepinEx.Core" Version="5.*" />
+    <PackageReference Include="UnityEngine.UI" Version="5.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\BepInEx.ModManager.Shared.csproj" />
+  </ItemGroup>
+</Project>

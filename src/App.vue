@@ -17,13 +17,9 @@
             </p>
             <div v-if="g.getIsbieinstalled()">
                 Installed plugins:
-                <p v-for="p in g.getPluginsList()">
-                    {{ p.getName() }}
-                </p>
+                <p v-for="p in g.getPluginsList()">{{ p.getId() }}({{ p.getVersion() }}) - {{ p.getName() }}</p>
                 Installed patchers:
-                <p v-for="p in g.getPatchersList()">
-                    {{ p.getName() }}
-                </p>
+                <p v-for="p in g.getPatchersList()">{{ p.getId() }}({{ p.getVersion() }}) - {{ p.getName() }}</p>
             </div>
         </div>
     </div>
