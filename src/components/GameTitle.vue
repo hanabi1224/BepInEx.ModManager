@@ -6,14 +6,8 @@
     ></a-avatar>
     {{ game.getName() }} ({{ game.getIs64bit() ? '64bit' : '32bit' }}) - BIE
     <a-icon
-      v-if="game.getIsbieinstalled()"
-      type="check"
-      style="color: green"
-    ></a-icon>
-    <a-icon
-      v-if="!game.getIsbieinstalled()"
-      type="close"
-      style="color: red"
+      :type="bieStatusIcon"
+      :style="bieStatusIconStyle"
     ></a-icon>
   </div>
 </template>
@@ -22,7 +16,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import i18next from 'i18next';
 import { grpcClient } from './../utils';
-import { GameInfo, InstallBIERequest } from './../generated/Steam_pb';
+import { GameInfo, InstallBIERequest } from './../generated/Game_pb';
 import { shell } from 'electron';
 
 @Component({
@@ -34,6 +28,20 @@ export default class GameTitle extends Vue {
 
     openPath() {
         return shell.openPath(this.game.getPath());
+    }
+
+    get bieStatusIcon(){
+      return this.game.getIsbieinstalled() ? 'check' : 'close';
+    }
+
+    get bieStatusIconStyle(){
+      if(!this.game.getIsbieinstalled()){
+        return 'color:red';
+      } 
+      if (this.game.getIsbieinitialized()){
+        return 'color:green';
+      }
+      return 'color:orange';
     }
 }
 </script>

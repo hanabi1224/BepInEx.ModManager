@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
@@ -30,8 +31,17 @@ namespace BepInEx.ModManager.Server
             else // CLI mode
             {
 #if DEBUG
-                await foreach (GameInfo x in ModManagerServiceImpl.GetSteamGamesAsync()) { }
+                //await foreach (GameInfo x in ModManagerServiceImpl.GetSteamGamesAsync()) { }
 #endif
+                //var g = DotNet.Globbing.Glob.Parse("**/BepInEx.*.zip");
+                //var m = g.IsMatch("http://a.com/BepInEx/BepInEx.Utility/releases/download/r7/BepInEx.CatchUnityEventExceptions.v1.0.zip");
+                //Console.WriteLine(m);
+                await Repo.AddonRepoManager.Instance.UpdateBucketAsync().ConfigureAwait(false);
+                var localPlugins = await Repo.AddonRepoManager.Instance.LoadLocalPluginsAsync().ConfigureAwait(false);
+                foreach (var p in localPlugins)
+                {
+                    Console.WriteLine(p.Path);
+                }
             }
         }
 

@@ -37,20 +37,55 @@
       >
         Pending
       </a-button>
+      <a-button
+        v-if="game.getIsbieinstalled()"
+        type="primary"
+        size="small"
+        @click="todo"
+      >
+        Install a plugin
+      </a-button>
       <!-- BIE installed: {{ g.getIsbieinstalled() }},
                 initialized {{ g.getIsbieinitialized() }} -->
     </p>
     <div v-if="game.getIsbieinstalled()">
       <div>
-        Installed plugins:
-        <p
-          v-for="p in game.getPluginsList()"
-          :key="p.getId()"
+        <a-list
+          item-layout="horizontal"
+          size="large"
+          :data-source="game.getPluginsList()"
+          :locale="listLocale"
         >
-          {{ p.getId() }}({{ p.getVersion() }}) - {{ p.getName() }}
-        </p>
+          <a-list-item
+            :key="item.getName()"
+            slot="renderItem"
+            slot-scope="item"
+          >
+            <a-list-item-meta
+              :description="item.getName()"
+            >
+              <span slot="title">{{ item.getId() }}(v{{ item.getVersion() }})</span>
+            </a-list-item-meta>  
+            <p>{{ item.getPath() }}</p>
+            Actions:
+            <a-button
+              type="primary"
+              size="small"
+              @click="todo"
+            >
+              Upgrade
+            </a-button> 
+            <a-button
+              type="danger"
+              size="small"
+              @click="todo"
+            >
+              Uninstall
+            </a-button> 
+          </a-list-item>          
+        </a-list>
       </div>
-      <div>
+      <!-- <div>
         Installed patchers:
         <p
           v-for="p in game.getPatchersList()"
@@ -58,7 +93,7 @@
         >
           {{ p.getId() }}({{ p.getVersion() }}) - {{ p.getName() }}
         </p>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -67,7 +102,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import i18next from 'i18next';
 import { grpcClient } from './../utils';
-import { GameInfo, InstallBIERequest } from './../generated/Steam_pb';
+import { GameInfo, InstallBIERequest } from './../generated/Game_pb';
 import { shell } from 'electron';
 
 @Component({
@@ -87,6 +122,12 @@ export default class GameCard extends Vue {
         return `Install BIE for ${this.game.getName()}`;
     }
 
+    get listLocale(){
+        return {
+            'emptyText': i18next.t('No plugins installed'),
+        }
+    }
+
     installBIE() {
         this.pending = true;
         const request = new InstallBIERequest().setPath(this.game.getPath());
@@ -104,6 +145,10 @@ export default class GameCard extends Vue {
 
     refreshGames() {
         this.$emit('refreshGames');
+    }
+
+    todo(){
+        this.$message.warning(`Not implemented yet!`);
     }
 }
 </script>

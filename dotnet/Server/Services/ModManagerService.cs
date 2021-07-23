@@ -14,9 +14,9 @@ namespace BepInEx.ModManager.Server.Services
 {
     public class ModManagerServiceImpl : ModManagerService.ModManagerServiceBase
     {
-        public override async Task<ListSteamGamesResponse> ListSteamGames(ListSteamGamesRequest request, ServerCallContext context)
+        public override async Task<ListGamesResponse> ListGames(ListGamesRequest request, ServerCallContext context)
         {
-            ListSteamGamesResponse response = new ListSteamGamesResponse();
+            ListGamesResponse response = new ListGamesResponse();
             await foreach (GameInfo g in GetSteamGamesAsync())
             {
                 response.Games.Add(g);
@@ -96,23 +96,28 @@ namespace BepInEx.ModManager.Server.Services
             {
                 return null;
             }
+            string bieCoreLibPath = Path.Combine(path, "BepInEx", "core", "BepInEx.dll");
             GameInfo gameInfo = new GameInfo
             {
                 Id = Regex.Match(subKey, @"\d+", RegexOptions.Compiled).Value,
                 Name = name,
                 Path = path,
                 Is64Bit = await FileTool.Is64BitAsync(unityPlayerPath).ConfigureAwait(false),
-                IsBIEInstalled = Directory.Exists(Path.Combine(path, "BepInEx")),
+                IsBIEInstalled = File.Exists(bieCoreLibPath),
                 IsBIEInitialized = File.Exists(Path.Combine(path, "BepInEx", "config", "BepInEx.cfg")),
             };
+            if (gameInfo.IsBIEInstalled)
+            {
+                gameInfo.BIEVersion = (await FileTool.ReadDllInfoAsync(bieCoreLibPath, versionOnly: true).ConfigureAwait(false))?.Version ?? string.Empty;
+            }
 
             foreach (string exe in Directory.EnumerateFiles(path, "*.exe", SearchOption.TopDirectoryOnly))
             {
                 if (!exe.Contains("unity", StringComparison.OrdinalIgnoreCase))
                 {
-                    using var icon = Icon.ExtractAssociatedIcon(exe);
-                    using var ms = new MemoryStream();
-                    using (var bmp = icon.ToBitmap())
+                    using Icon icon = Icon.ExtractAssociatedIcon(exe);
+                    using MemoryStream ms = new MemoryStream();
+                    using (Bitmap bmp = icon.ToBitmap())
                     {
                         bmp.Save(ms, ImageFormat.Png);
                     }

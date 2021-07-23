@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package BepInEx;
 
-message ListSteamGamesRequest {
+message ListGamesRequest {
 }
 
-message ListSteamGamesResponse {
+message ListGamesResponse {
   repeated GameInfo games = 1;
 }
 
@@ -17,6 +17,7 @@ message GameInfo {
     string icon = 5;
     bool isBIEInstalled = 11;
     bool isBIEInitialized = 12;
+    string BIEVersion = 13;
     repeated PluginInfo plugins = 21;
     repeated PatcherInfo patchers = 22;
 }
@@ -42,4 +43,14 @@ message InstallBIERequest {
 
 message UninstallBIERequest {
     string path = 1;
+}
+
+message InstallPluginRequest {
+    string pluginPath = 1;
+    string gamePath = 2;
+}
+
+message AddPluginToRepoRequest {
+    bytes data = 1;
+    string fileName = 2;
 }

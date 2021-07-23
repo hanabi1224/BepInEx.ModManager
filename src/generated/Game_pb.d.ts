@@ -2,35 +2,35 @@ import * as jspb from 'google-protobuf'
 
 
 
-export class ListSteamGamesRequest extends jspb.Message {
+export class ListGamesRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ListSteamGamesRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: ListSteamGamesRequest): ListSteamGamesRequest.AsObject;
-  static serializeBinaryToWriter(message: ListSteamGamesRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ListSteamGamesRequest;
-  static deserializeBinaryFromReader(message: ListSteamGamesRequest, reader: jspb.BinaryReader): ListSteamGamesRequest;
+  toObject(includeInstance?: boolean): ListGamesRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ListGamesRequest): ListGamesRequest.AsObject;
+  static serializeBinaryToWriter(message: ListGamesRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ListGamesRequest;
+  static deserializeBinaryFromReader(message: ListGamesRequest, reader: jspb.BinaryReader): ListGamesRequest;
 }
 
-export namespace ListSteamGamesRequest {
+export namespace ListGamesRequest {
   export type AsObject = {
   }
 }
 
-export class ListSteamGamesResponse extends jspb.Message {
+export class ListGamesResponse extends jspb.Message {
   getGamesList(): Array<GameInfo>;
-  setGamesList(value: Array<GameInfo>): ListSteamGamesResponse;
-  clearGamesList(): ListSteamGamesResponse;
+  setGamesList(value: Array<GameInfo>): ListGamesResponse;
+  clearGamesList(): ListGamesResponse;
   addGames(value?: GameInfo, index?: number): GameInfo;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ListSteamGamesResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: ListSteamGamesResponse): ListSteamGamesResponse.AsObject;
-  static serializeBinaryToWriter(message: ListSteamGamesResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ListSteamGamesResponse;
-  static deserializeBinaryFromReader(message: ListSteamGamesResponse, reader: jspb.BinaryReader): ListSteamGamesResponse;
+  toObject(includeInstance?: boolean): ListGamesResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ListGamesResponse): ListGamesResponse.AsObject;
+  static serializeBinaryToWriter(message: ListGamesResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ListGamesResponse;
+  static deserializeBinaryFromReader(message: ListGamesResponse, reader: jspb.BinaryReader): ListGamesResponse;
 }
 
-export namespace ListSteamGamesResponse {
+export namespace ListGamesResponse {
   export type AsObject = {
     gamesList: Array<GameInfo.AsObject>,
   }
@@ -57,6 +57,9 @@ export class GameInfo extends jspb.Message {
 
   getIsbieinitialized(): boolean;
   setIsbieinitialized(value: boolean): GameInfo;
+
+  getBieversion(): string;
+  setBieversion(value: string): GameInfo;
 
   getPluginsList(): Array<PluginInfo>;
   setPluginsList(value: Array<PluginInfo>): GameInfo;
@@ -85,6 +88,7 @@ export namespace GameInfo {
     icon: string,
     isbieinstalled: boolean,
     isbieinitialized: boolean,
+    bieversion: string,
     pluginsList: Array<PluginInfo.AsObject>,
     patchersList: Array<PatcherInfo.AsObject>,
   }
@@ -187,6 +191,52 @@ export class UninstallBIERequest extends jspb.Message {
 export namespace UninstallBIERequest {
   export type AsObject = {
     path: string,
+  }
+}
+
+export class InstallPluginRequest extends jspb.Message {
+  getPluginpath(): string;
+  setPluginpath(value: string): InstallPluginRequest;
+
+  getGamepath(): string;
+  setGamepath(value: string): InstallPluginRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): InstallPluginRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: InstallPluginRequest): InstallPluginRequest.AsObject;
+  static serializeBinaryToWriter(message: InstallPluginRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): InstallPluginRequest;
+  static deserializeBinaryFromReader(message: InstallPluginRequest, reader: jspb.BinaryReader): InstallPluginRequest;
+}
+
+export namespace InstallPluginRequest {
+  export type AsObject = {
+    pluginpath: string,
+    gamepath: string,
+  }
+}
+
+export class AddPluginToRepoRequest extends jspb.Message {
+  getData(): Uint8Array | string;
+  getData_asU8(): Uint8Array;
+  getData_asB64(): string;
+  setData(value: Uint8Array | string): AddPluginToRepoRequest;
+
+  getFilename(): string;
+  setFilename(value: string): AddPluginToRepoRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AddPluginToRepoRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: AddPluginToRepoRequest): AddPluginToRepoRequest.AsObject;
+  static serializeBinaryToWriter(message: AddPluginToRepoRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AddPluginToRepoRequest;
+  static deserializeBinaryFromReader(message: AddPluginToRepoRequest, reader: jspb.BinaryReader): AddPluginToRepoRequest;
+}
+
+export namespace AddPluginToRepoRequest {
+  export type AsObject = {
+    data: Uint8Array | string,
+    filename: string,
   }
 }
 

@@ -10,6 +10,27 @@
         >
           Refresh Game List
         </a-button>
+        <a-button
+          type="primary"
+          size="small"
+          @click="todo"
+        >
+          Manage games
+        </a-button>
+        <a-button
+          type="primary"
+          size="small"
+          @click="todo"
+        >
+          Manage plugins
+        </a-button>
+        <a-button
+          type="primary"
+          size="small"
+          @click="todo"
+        >
+          Manage plugin index
+        </a-button>
       </h2>
     </div>
     <div class="container">
@@ -45,7 +66,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import i18next from 'i18next';
 import _ from 'lodash';
-import { ListSteamGamesRequest, GameInfo, InstallBIERequest } from './generated/Steam_pb';
+import { ListGamesRequest, GameInfo, InstallBIERequest } from './generated/Game_pb';
 import { grpcClient } from './utils';
 import GameCard from './components/GameCard.vue';
 import GameTitle from './components/GameTitle.vue';
@@ -92,10 +113,14 @@ export default class AppPage extends Vue {
     }
 
     refreshGames() {
-        const request = new ListSteamGamesRequest();
-        grpcClient.listSteamGames(request, {}, (err, response) => {
+        const request = new ListGamesRequest();
+        grpcClient.listGames(request, {}, (err, response) => {
             this.games = response.getGamesList();
         });
+    }
+
+todo(){
+        this.$message.warning(`Not implemented yet!`);
     }
 
     created() {

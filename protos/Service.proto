@@ -3,14 +3,33 @@ syntax = "proto3";
 package BepInEx;
 
 import "Common.proto";
-import "Steam.proto";
+import "Game.proto";
 
 service ModManagerService {
 
-  rpc ListSteamGames (ListSteamGamesRequest) returns (ListSteamGamesResponse);
+  rpc ListGames (ListGamesRequest) returns (ListGamesResponse);
 
   rpc InstallBIE (InstallBIERequest) returns (CommonServiceResponse);
 
   rpc UninstallBIE (UninstallBIERequest) returns (CommonServiceResponse);
 
+  rpc AddPluginToRepo (AddPluginToRepoRequest) returns (CommonServiceResponse);
+
+  rpc InstallPlugin (InstallPluginRequest) returns (CommonServiceResponse);
+
+  rpc LongConnect (LongConnectRequest) returns (stream LongConnectResponse);
+}
+
+enum ServerSideNotification {
+	unknown = 0;
+	refreshGameInfo = 1;
+	refreshRepoInfo = 2;
+}
+
+message LongConnectRequest {
+}
+
+message LongConnectResponse {
+	string message = 1;
+	ServerSideNotification notification = 2;
 }

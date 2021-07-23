@@ -36,7 +36,7 @@ namespace BepInEx.ModManager.Server
             return !string.IsNullOrEmpty(stdout) && !stdout.Contains("32-bit", StringComparison.OrdinalIgnoreCase);
         }
 
-        public static async Task<BepInExAssemblyInfo> ReadDllInfoAsync(string file)
+        public static async Task<BepInExAssemblyInfo> ReadDllInfoAsync(string file, bool versionOnly = false)
         {
             string pwd = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dllreader");
             string exe = Path.Combine(pwd, "BepInEx.ModManager.DllReader.exe");
@@ -53,6 +53,11 @@ namespace BepInEx.ModManager.Server
             };
             psi.ArgumentList.Add("--path");
             psi.ArgumentList.Add(file);
+            if (versionOnly)
+            {
+                psi.ArgumentList.Add("--version-only");
+                psi.ArgumentList.Add("true");
+            }
 
             try
             {

@@ -14,57 +14,66 @@ namespace BepInEx.ModManager.DllReader
             _ = typeof(BepInPlugin);
         }
 
-        public static void Main(string path)
+        public static void Main(string path, bool versionOnly = false)
         {
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException($"{path}");
             }
 
-            AppDomain appDomain = AppDomain.CurrentDomain;
-            Assembly assembly;
-            try
+            Assembly assembly = null;
+            if (!versionOnly)
             {
-                AssemblyName assemblyName = AssemblyName.GetAssemblyName(path);
-                assembly = appDomain.Load(assemblyName);
+                try
+                {
+                    AssemblyName assemblyName = AssemblyName.GetAssemblyName(path);
+                    assembly = AppDomain.CurrentDomain.Load(assemblyName);
+                }
+                catch
+                {
+                }
             }
-            catch
+            if (assembly == null)
             {
                 assembly = Assembly.ReflectionOnlyLoadFrom(path);
             }
-            try
+
+            if (!versionOnly)
             {
-                foreach (TypeInfo t in assembly.DefinedTypes)
+                try
                 {
-                    BepInPlugin pluginAttribute = t.GetCustomAttribute<BepInPlugin>();
-                    if (pluginAttribute != null)
+                    foreach (TypeInfo t in assembly.DefinedTypes)
                     {
-                        BepInExAssemblyInfo pluginInfo = new BepInExAssemblyInfo
+                        BepInPlugin pluginAttribute = t.GetCustomAttribute<BepInPlugin>();
+                        if (pluginAttribute != null)
                         {
-                            Type = BepInExAssemblyType.Plugin,
-                            Id = pluginAttribute.GUID,
-                            Name = pluginAttribute.Name,
-                            Version = pluginAttribute.Version.ToString(),
-                        };
-                        Console.WriteLine(JsonConvert.SerializeObject(pluginInfo));
-                        return;
+                            BepInExAssemblyInfo pluginInfo = new BepInExAssemblyInfo
+                            {
+                                Type = BepInExAssemblyType.Plugin,
+                                Id = pluginAttribute.GUID,
+                                Name = pluginAttribute.Name,
+                                Version = pluginAttribute.Version.ToString(),
+                            };
+                            Console.WriteLine(JsonConvert.SerializeObject(pluginInfo));
+                            return;
+                        }
                     }
                 }
-            }
-            catch (ReflectionTypeLoadException rtle)
-            {
-#if DEBUG
-                foreach (Exception e in rtle.LoaderExceptions)
+                catch (ReflectionTypeLoadException rtle)
                 {
-                    Console.Error.WriteLine(e);
-                }
-#endif
-            }
-            catch (Exception e)
-            {
 #if DEBUG
-                Console.Error.WriteLine(e);
+                    foreach (Exception e in rtle.LoaderExceptions)
+                    {
+                        Console.Error.WriteLine(e);
+                    }
 #endif
+                }
+                catch (Exception e)
+                {
+#if DEBUG
+                    Console.Error.WriteLine(e);
+#endif
+                }
             }
             {
                 Match match = Regex.Match(assembly.FullName, @"Version=(?<version>.+?),", RegexOptions.Compiled);
