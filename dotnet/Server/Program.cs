@@ -41,10 +41,8 @@ namespace BepInEx.ModManager.Server
             }
             else // CLI mode
             {
-#if DEBUG
-                //await foreach (GameInfo x in ModManagerServiceImpl.GetSteamGamesAsync()) { }
-#endif
-                await Repo.AddonRepoManager.Instance.UpdateBucketsAsync().ConfigureAwait(false);
+                await ModManagerServiceImpl.GetGamesAsync().ConfigureAwait(false);
+                //await Repo.AddonRepoManager.Instance.UpdateBucketsAsync().ConfigureAwait(false);
             }
         }
 

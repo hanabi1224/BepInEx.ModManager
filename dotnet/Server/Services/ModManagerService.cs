@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -148,7 +149,7 @@ namespace BepInEx.ModManager.Server.Services
         {
             if (InstallationUtils.IsUnityGameRoot(request.Path))
             {
-                var config = AddonRepoManager.Instance.Config;
+                AddonRepoConfig config = AddonRepoManager.Instance.Config;
                 config.Games.Add(new()
                 {
                     Name = string.IsNullOrWhiteSpace(request.Name) ? Path.GetFileName(request.Path).Trim() : request.Name.Trim(),
@@ -207,12 +208,19 @@ namespace BepInEx.ModManager.Server.Services
                 }
             }
 
-            foreach (Task<GameInfo> t in tasks)
+            foreach (Task<GameInfo> t in tasks.Where(t => t != null))
             {
-                GameInfo g = await t.ConfigureAwait(false);
-                if (g != null)
+                try
                 {
-                    games.Add(g);
+                    GameInfo g = await t.ConfigureAwait(false);
+                    if (g != null)
+                    {
+                        games.Add(g);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
                 }
             }
             return games;
