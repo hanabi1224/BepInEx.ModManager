@@ -34,6 +34,7 @@ Install [.Net Framework 4.6.2 runtime](https://dotnet.microsoft.com/download/dot
 - Install [yarn](https://classic.yarnpkg.com/en/docs/install#windows-stable)
 - Install npm package with ```yarn```
 - Run with ```yarn start```
+- Auto-fresh UI change with ```yarn watch```
 - Package installer with ```yarn dist```
 
 ## Screenshots

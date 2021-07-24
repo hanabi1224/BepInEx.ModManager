@@ -14,14 +14,13 @@
                 <a-button type="primary" size="small" @click="manageConfig"> Manage config </a-button>
                 <a-button type="primary" size="small" @click="managePlugins"> Manage plugins </a-button>
                 <a-upload
-                    name="gamedir"
-                    directory
+                    name="file"
+                    :directory="true"
                     :multiple="false"
                     :file-list="[]"
                     :show-upload-list="false"
                     accept=".dll"
-                    action="/404"
-                    @beforeUpload="handleAddGameBeforeUpload"
+                    :beforeUpload="handleAddGameBeforeUpload"
                     @change="handleAddGameChange"
                 >
                     <a-button type="primary" size="small"> Add a game </a-button>
@@ -184,8 +183,9 @@ export default class AppPage extends Vue {
     }
 
     handleAddGameChange(info) {
-        const fileObj = info.file.originFileObj as File;
-        if (fileObj.name.toLowerCase() != 'UnityPlayer.dll'.toLowerCase()) {
+        // console.log(info);
+        const fileObj = info.file as File;
+        if (fileObj && fileObj.name.toLowerCase() != 'UnityPlayer.dll'.toLowerCase()) {
             return;
         }
         const dir = path.dirname(fileObj.path);
@@ -202,9 +202,9 @@ export default class AppPage extends Vue {
                     this.$message.warn(response.getError());
                 }
             } finally {
-                this.installing = false;
             }
         });
+        return false;
     }
 
     todo() {

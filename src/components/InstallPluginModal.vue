@@ -1,78 +1,58 @@
 <template>
-  <div>
-    <a-modal
-      :title="title"
-      :visible="!!game"
-      :cancel-text="i18n('Close')"
-      :ok-text="null"
-      :ok-button-props="{ style: { display: 'none' } }"
-      @ok="close"
-      @cancel="close"
-    >
-      <a-spin
-        v-if="!!game"
-        :spinning="installing"
-        size="large"
-      >
-        <div class="upload-zone">
-          <a-upload-dragger
-            name="file"
-            accept=".dll,.zip"
-            :multiple="false"
-            :file-list="[]"
-            :show-upload-list="false"
-            @beforeUpload="handleFileBeforeUpload"
-            @change="handleFileUpload"
-          >
-            <p class="ant-upload-drag-icon">
-              <a-icon type="upload" />
-            </p>
-            <p class="ant-upload-text">
-              {{ i18n('Upload') }}
-            </p>
-          </a-upload-dragger>
-        </div>
-        <a-input-group compact>
-          <a-input
-            v-model="filterText"
-            style="width: 60%"
-            placeholder="Search"
-          ></a-input>
-        </a-input-group>
-        <div class="container">
-          <a-list
-            item-layout="horizontal"
-            :data-source="filteredPlugins"
-          >
-            <a-list-item
-              slot="renderItem"
-              :key="getPluginKey(item)"
-              slot-scope="item"
-            >
-              <a-list-item-meta :description="item.getName()">
-                <span slot="title">{{ item.getId() }}(v{{ item.getVersion() }})</span>
-              </a-list-item-meta>
-              <p>{{ item.getPath() }}</p>
-              Actions:
-              <a-popconfirm
-                :title="getConfirmInstallPluginMessage(item)"
-                ok-text="Yes"
-                cancel-text="No"
-                @confirm="installPlugin(item)"
-              >
-                <a-button
-                  type="primary"
-                  size="small"
-                >
-                  Install
-                </a-button>
-              </a-popconfirm>
-            </a-list-item>
-          </a-list>
-        </div>
-      </a-spin>
-    </a-modal>
-  </div>
+    <div>
+        <a-modal
+            :title="title"
+            :visible="!!game"
+            :cancel-text="i18n('Close')"
+            :ok-text="null"
+            :ok-button-props="{ style: { display: 'none' } }"
+            @ok="close"
+            @cancel="close"
+        >
+            <a-spin v-if="!!game" :spinning="installing" size="large">
+                <div class="upload-zone">
+                    <a-upload-dragger
+                        name="file"
+                        accept=".dll,.zip"
+                        :multiple="false"
+                        :file-list="[]"
+                        :show-upload-list="false"
+                        :beforeUpload="handleFileBeforeUpload"
+                        @change="handleFileUpload"
+                    >
+                        <p class="ant-upload-drag-icon">
+                            <a-icon type="upload" />
+                        </p>
+                        <p class="ant-upload-text">
+                            {{ i18n('Upload') }}
+                        </p>
+                    </a-upload-dragger>
+                </div>
+                <a-input-group compact>
+                    <a-input v-model="filterText" style="width: 60%" placeholder="Search"></a-input>
+                </a-input-group>
+                <div class="container">
+                    <a-list item-layout="horizontal" :data-source="filteredPlugins">
+                        <a-list-item slot="renderItem" :key="getPluginKey(item)" slot-scope="item">
+                            <a-list-item-meta :description="item.getName()">
+                                <span slot="title">{{ item.getId() }}(v{{ item.getVersion() }})</span>
+                            </a-list-item-meta>
+                            <p>{{ item.getPath() }}</p>
+                            Actions:
+                            <a-popconfirm
+                                :title="getConfirmInstallPluginMessage(item)"
+                                ok-text="Yes"
+                                cancel-text="No"
+                                @confirm="installPlugin(item)"
+                            >
+                                <a-button type="primary" size="small"> Install </a-button>
+                            </a-popconfirm>
+                        </a-list-item>
+                    </a-list>
+                </div>
+            </a-spin>
+        </a-modal>
+    </div>
 </template>
 
 <script lang="ts">
@@ -224,7 +204,7 @@ export default class InstallPluginModal extends Vue {
         const name = info.file.name as string;
         if (name.endsWith('.dll') || name.endsWith('.zip')) {
             console.log(info);
-            const fileObj = info.file.originFileObj as File;
+            const fileObj = info.file as File;
             this.$message.info('Uploading');
             const buffer = fs.readFileSync(fileObj.path);
             const request = new AddPluginToRepoRequest().setFilename(name).setData(buffer);
