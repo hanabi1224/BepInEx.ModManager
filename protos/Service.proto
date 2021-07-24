@@ -28,7 +28,7 @@ service ModManagerService {
 }
 
 enum ServerSideNotification {
-	unknown = 0;
+	ping = 0;
 	refreshGameInfo = 1;
 	refreshRepoInfo = 2;
 }

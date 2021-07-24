@@ -57,6 +57,30 @@ namespace BepInEx.ModManager.Server.Repo
             {
                 Directory.CreateDirectory(PluginStoreRoot);
             }
+
+            // Temp Logic to allow manual config edit
+            _ = Task.Run(async () =>
+            {
+                FileInfo fi = new(ConfigFilePath);
+                while (true)
+                {
+                    try
+                    {
+                        FileInfo newFi = new(ConfigFilePath);
+                        if (newFi.LastWriteTimeUtc != fi.LastWriteTimeUtc)
+                        {
+                            Logger.Info("Config file changed, reloading");
+                            fi = newFi;
+                            Config = s_yamlDeserializer.Deserialize<AddonRepoConfig>(File.ReadAllText(ConfigFilePath));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                    await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+                }
+            });
         }
 
         public void SaveConfig(AddonRepoConfig config)
@@ -222,6 +246,12 @@ namespace BepInEx.ModManager.Server.Repo
             try
             {
                 HttpResponseMessage response = await s_client.GetAsync(uri).ConfigureAwait(false);
+                // Too large file can be malicious
+                if (response.Content.Headers.ContentLength > 5 * 1024 * 1024)
+                {
+                    return false;
+                }
+
                 string etag = null;
                 if (response.Headers.TryGetValues("ETag", out IEnumerable<string> etagHeaderValues))
                 {
@@ -402,6 +432,7 @@ namespace BepInEx.ModManager.Server.Repo
         {
             if (File.Exists(ConfigFilePath))
             {
+                Logger.Info($"Loading plugin repo config {ConfigFilePath}");
                 try
                 {
                     return s_yamlDeserializer.Deserialize<AddonRepoConfig>(File.ReadAllText(ConfigFilePath));

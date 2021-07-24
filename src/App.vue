@@ -3,12 +3,17 @@
         <div class="top-pane">
             <h2>
                 <!-- {{ gameCount }} Games -->
-                <a-button type="primary" size="small" @click="refreshGames"> Refresh Game List </a-button>
-                <a-button type="primary" size="small" @click="todo"> Manage games ({{ games.length }}) </a-button>
-                <a-button type="primary" size="small" @click="todo">
-                    Manage plugins ({{ repoPlugins.length }})
+                <a-button type="primary" size="small" @click="refreshGames(false)">
+                    Refresh Game List ({{ games.length }})
                 </a-button>
-                <a-button type="primary" size="small" @click="todo"> Manage plugin index </a-button>
+                <a-button type="primary" size="small" @click="refreshPluginRepo(false)">
+                    Refresh Plugin List ({{ repoPlugins.length }})
+                </a-button>
+                <a-button type="primary" size="small" @click="checkPluginRepoUpdates">
+                    Check Plugin Repo Updates
+                </a-button>
+                <a-button type="primary" size="small" @click="manageConfig"> Manage config </a-button>
+                <a-button type="primary" size="small" @click="managePlugins"> Manage plugins </a-button>
             </h2>
         </div>
         <div class="container">
@@ -45,8 +50,9 @@ import GameCard from './components/GameCard.vue';
 import GameTitle from './components/GameTitle.vue';
 import InstallPluginModal from './components/InstallPluginModal.vue';
 import { LongConnectResponse, ServerSideNotification } from './generated/Service_pb';
-import { ListPluginsRequest } from './generated/Repo_pb';
-const { shell } = require('electron');
+import { CheckPluginUpdatesRequest, ListPluginsRequest } from './generated/Repo_pb';
+import { shell } from 'electron';
+import path from 'path';
 
 @Component({
     components: { GameCard, GameTitle, InstallPluginModal },
@@ -88,29 +94,67 @@ export default class AppPage extends Vue {
         return this.$refs['logWindow'] as HTMLTextAreaElement;
     }
 
-    refreshGames() {
+    get configDir() {
+        return path.join((process.env as any).USERPROFILE, '.bierepo');
+    }
+
+    refreshGames(silent = true) {
         console.log('refreshGames');
+        if (!silent) {
+            this.$message.info('Please wait...');
+        }
         const request = new ListGamesRequest();
         grpcClient.listGames(request, {}, (err, response) => {
             this.games = response.getGamesList();
+            if (!silent) {
+                this.$message.success('Done');
+            }
         });
     }
 
-    refreshPluginRepo() {
+    checkPluginRepoUpdates() {
+        console.log('checkPluginRepoUpdates');
+        this.$message.info('Please wait...');
+        const request = new CheckPluginUpdatesRequest();
+        grpcClient.checkPluginUpdates(request, {}, (err, response) => {
+            if (response.getSuccess()) {
+                this.refreshPluginRepo();
+                this.$message.success('Done');
+            }
+        });
+    }
+
+    refreshPluginRepo(silent = true) {
+        if (!silent) {
+            this.$message.info('Please wait...');
+        }
         console.log('refreshPluginRepo');
         const request = new ListPluginsRequest();
         grpcClient.listPlugins(request, {}, (err, response) => {
             this.repoPlugins = response.getPluginsList();
+            if (!silent) {
+                this.$message.success('Done');
+            }
         });
     }
 
     installPlugin(game: GameInfo) {
-        console.log(`installPlugin - ${game.getName()}`);
+        // console.log(`installPlugin - ${game.getName()}`);
         this.installPluginGame = game;
     }
 
     closeInstallPluginModal() {
         this.installPluginGame = null;
+    }
+
+    manageConfig() {
+        // web editor instead
+        shell.openPath(this.configDir);
+        // shell.openPath(path.join(this.configDir, 'config.yaml'));
+    }
+
+    managePlugins() {
+        shell.openPath(path.join(this.configDir, 'plugins'));
     }
 
     todo() {

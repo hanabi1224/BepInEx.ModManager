@@ -331,7 +331,7 @@ proto.BepInEx.LongConnectResponse.prototype.setNotification = function(value) {
  * @enum {number}
  */
 proto.BepInEx.ServerSideNotification = {
-  UNKNOWN: 0,
+  PING: 0,
   REFRESHGAMEINFO: 1,
   REFRESHREPOINFO: 2
 };

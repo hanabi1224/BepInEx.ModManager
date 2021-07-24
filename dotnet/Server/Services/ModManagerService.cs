@@ -25,15 +25,12 @@ namespace BepInEx.ModManager.Server.Services
             ServerCallContext context)
         {
             CancellationToken token = context.CancellationToken;
-            Channel<string> channel = Channel.CreateUnbounded<string>();
+            Channel<LongConnectResponse> channel = Channel.CreateUnbounded<LongConnectResponse>();
             ClientNotification.ChannelWriter = channel.Writer;
             while (!token.IsCancellationRequested && ClientNotification.ChannelWriter == channel.Writer)
             {
-                string msg = await channel.Reader.ReadAsync(token).ConfigureAwait(false);
-                await responseStream.WriteAsync(new()
-                {
-                    Message = msg,
-                }).ConfigureAwait(false);
+                LongConnectResponse msg = await channel.Reader.ReadAsync(token).ConfigureAwait(false);
+                await responseStream.WriteAsync(msg).ConfigureAwait(false);
                 await Task.Delay(TimeSpan.FromSeconds(1), token).ConfigureAwait(false);
             }
             if (ClientNotification.ChannelWriter == channel.Writer)
@@ -120,35 +117,55 @@ namespace BepInEx.ModManager.Server.Services
         public static async Task<IList<GameInfo>> GetGamesAsync()
         {
             List<GameInfo> games = new();
-            RegistryKey uninstallEntry = Registry.LocalMachine
-                .OpenSubKey("SOFTWARE")?
-                .OpenSubKey("Microsoft")?
-                .OpenSubKey("Windows")?
-                .OpenSubKey("CurrentVersion")?
-                .OpenSubKey("Uninstall");
-            if (uninstallEntry != null)
+            List<Task<GameInfo>> tasks = new();
+            if (AddonRepoManager.Instance.Config.Games.Count > 0)
             {
-                List<Task<GameInfo>> tasks = new();
-                foreach (string subKey in uninstallEntry.GetSubKeyNames())
+                foreach (AddonRepoGameConfig g in AddonRepoManager.Instance.Config.Games)
                 {
-                    if (subKey.StartsWith("Steam App"))
+                    tasks.Add(ReadGameInfoAsync(id: g.Name, name: g.Name, path: g.Path));
+                }
+            }
+
+            // Steam
+            if (AddonRepoManager.Instance.Config.Steam)
+            {
+                try
+                {
+                    RegistryKey uninstallEntry = Registry.LocalMachine
+                        .OpenSubKey("SOFTWARE")?
+                        .OpenSubKey("Microsoft")?
+                        .OpenSubKey("Windows")?
+                        .OpenSubKey("CurrentVersion")?
+                        .OpenSubKey("Uninstall");
+                    if (uninstallEntry != null)
                     {
-                        tasks.Add(ReadGameInfoAsync(uninstallEntry, subKey));
+                        foreach (string subKey in uninstallEntry.GetSubKeyNames())
+                        {
+                            if (subKey.StartsWith("Steam App"))
+                            {
+                                tasks.Add(ReadGameInfoAsync(uninstallEntry, subKey));
+                            }
+                        }
                     }
                 }
-                foreach (Task<GameInfo> t in tasks)
+                catch (Exception e)
                 {
-                    GameInfo g = await t.ConfigureAwait(false);
-                    if (g != null)
-                    {
-                        games.Add(g);
-                    }
+                    Logger.Error(e);
+                }
+            }
+
+            foreach (Task<GameInfo> t in tasks)
+            {
+                GameInfo g = await t.ConfigureAwait(false);
+                if (g != null)
+                {
+                    games.Add(g);
                 }
             }
             return games;
         }
 
-        private static async Task<GameInfo> ReadGameInfoAsync(RegistryKey uninstallEntry, string subKey)
+        private static Task<GameInfo> ReadGameInfoAsync(RegistryKey uninstallEntry, string subKey)
         {
             if (!subKey.StartsWith("Steam App"))
             {
@@ -170,6 +187,13 @@ namespace BepInEx.ModManager.Server.Services
                     return null;
                 }
             }
+            string id = Regex.Match(subKey, @"\d+", RegexOptions.Compiled).Value;
+            return ReadGameInfoAsync(id: id, name: name, path: path);
+        }
+
+        private static async Task<GameInfo> ReadGameInfoAsync(string id, string name, string path)
+        {
+
             if (string.IsNullOrEmpty(name))
             {
                 name = Path.GetFileName(path);
@@ -182,7 +206,7 @@ namespace BepInEx.ModManager.Server.Services
             string bieCoreLibPath = Path.Combine(path, "BepInEx", "core", "BepInEx.dll");
             GameInfo gameInfo = new()
             {
-                Id = Regex.Match(subKey, @"\d+", RegexOptions.Compiled).Value,
+                Id = id,
                 Name = name,
                 Path = path,
                 Is64Bit = await FileTool.Is64BitAsync(unityPlayerPath).ConfigureAwait(false),

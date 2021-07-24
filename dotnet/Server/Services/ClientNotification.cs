@@ -9,6 +9,6 @@ namespace BepInEx.ModManager.Server.Services
     public static class ClientNotification
     {
         // Single writer should be enough for this use case
-        public static ChannelWriter<string> ChannelWriter { get; set; }
+        public static ChannelWriter<LongConnectResponse> ChannelWriter { get; set; }
     }
 }

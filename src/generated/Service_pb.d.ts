@@ -42,7 +42,7 @@ export namespace LongConnectResponse {
 }
 
 export enum ServerSideNotification { 
-  UNKNOWN = 0,
+  PING = 0,
   REFRESHGAMEINFO = 1,
   REFRESHREPOINFO = 2,
 }

@@ -8,7 +8,10 @@ namespace BepInEx.ModManager.Server.Repo
     {
         public const string HelpText = @"
 # format
+# steam: true
 # game:
+#   - name: Oxygen Not Included
+#     path: C:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded
 #   - name: foo
 #     path: c:\games\foo
 #   - name: bar
@@ -30,6 +33,7 @@ namespace BepInEx.ModManager.Server.Repo
 
         public static AddonRepoConfig Default { get; } = new()
         {
+            Steam = true,
             Games = new(),
             Buckets = new()
             {
@@ -53,6 +57,8 @@ namespace BepInEx.ModManager.Server.Repo
                 },
             },
         };
+
+        public bool Steam { get; set; }
 
         public List<AddonRepoGameConfig> Games { get; set; }
 
