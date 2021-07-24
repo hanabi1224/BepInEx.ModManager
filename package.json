@@ -13,7 +13,10 @@
     "appId": "BepInEx.ModManager",
     "productName": "BepInEx.ModManager",
     "win": {
-      "target": "nsis",
+      "target": [
+        "nsis",
+        "zip"
+      ],
       "publish": [
         "github"
       ]
@@ -39,7 +42,7 @@
   "dependencies": {
     "ant-design-vue": "^1.7.6",
     "codemirror": "^5.62.2",
-    "electron-log": "^4.3.5",
+    "electron-log": "^4.4.0",
     "electron-updater": "^4.3.9",
     "element-ui": "^2.15.3",
     "google-protobuf": "^3.17.3",
@@ -68,7 +71,7 @@
     "parcel-bundler": "^1.12.5",
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
-    "sass": "^1.35.2",
+    "sass": "^1.36.0",
     "typescript": "^4.3.5",
     "vue-eslint-parser": "^7.9.0",
     "vue-template-compiler": "^2.6.14"

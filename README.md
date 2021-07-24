@@ -1,5 +1,8 @@
 # BepInEx.ModManager
-[![bench](https://github.com/hanabi1224/BepInEx.ModManager/actions/workflows/main.yml/badge.svg)](https://github.com/hanabi1224/BepInEx.ModManager/actions/workflows/main.yml)
+[![](https://img.shields.io/github/downloads/hanabi1224/BepInEx.ModManager/total.svg)](https://github.com/hanabi1224/BepInEx.ModManager/releases)
+[![](https://img.shields.io/github/downloads/hanabi1224/BepInEx.ModManager/latest/total.svg)](https://github.com/hanabi1224/BepInEx.ModManager/releases/latest)
+[![](https://img.shields.io/github/v/release/hanabi1224/BepInEx.ModManager)](https://github.com/hanabi1224/BepInEx.ModManager/releases/latest)
+[![](https://github.com/hanabi1224/BepInEx.ModManager/actions/workflows/main.yml/badge.svg)](https://github.com/hanabi1224/BepInEx.ModManager/actions/workflows/main.yml)
 [![MIT License](https://img.shields.io/github/license/hanabi1224/BepInEx.ModManager.svg)](https://github.com/hanabi1224/BepInEx.ModManager/blob/main/LICENSE)
 
 This a general mod manager for BepInEx built with Electron.
