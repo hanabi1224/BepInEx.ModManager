@@ -41,5 +41,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           name: installer
-          path: dist/*.exe
+          path: dist/*
           if-no-files-found: error
