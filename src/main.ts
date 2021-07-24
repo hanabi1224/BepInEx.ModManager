@@ -4,6 +4,9 @@ import { autoUpdater } from "electron-updater";
 import path from 'path';
 import { spawn } from "child_process";
 
+app.setAppUserModelId("BepInEx.ModManager");
+app.setAsDefaultProtocolClient('biemm');
+
 const serverPort = 40003;
 const cwd = process.cwd();
 logger.info(cwd);
@@ -75,6 +78,9 @@ autoUpdater.on('update-downloaded', (info) => {
    sendStatusToWindow('Update downloaded');
 });
 
-app.on('ready', function () {
-   autoUpdater.checkForUpdatesAndNotify();
+app.on('ready', async () => {
+   const result = await autoUpdater.checkForUpdatesAndNotify();
+   if (result) {
+      logger.info(JSON.stringify(result));
+   }
 });
