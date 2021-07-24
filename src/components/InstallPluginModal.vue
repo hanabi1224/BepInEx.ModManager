@@ -20,6 +20,7 @@
             accept=".dll,.zip"
             :multiple="false"
             :file-list="[]"
+            :show-upload-list="false"
             @beforeUpload="handleFileBeforeUpload"
             @change="handleFileUpload"
           >
@@ -227,7 +228,7 @@ export default class InstallPluginModal extends Vue {
             this.$message.info('Uploading');
             const buffer = fs.readFileSync(fileObj.path);
             const request = new AddPluginToRepoRequest().setFilename(name).setData(buffer);
-            console.log(request);
+            // console.log(request);
             grpcClient.addPluginToRepo(request, {}, this.createCommonResponseHandler(this.refreshPluginRepo));
         } else {
             this.$message.warning(i18next.t('Unsupported file type'));
@@ -256,17 +257,6 @@ export default class InstallPluginModal extends Vue {
 }
 </script>
 
-<style lang="scss">
-// TODO: make style scoped
-.ant-modal-content {
-    position: fixed;
-    left: 10vw;
-    width: 80vw;
-    top: 5vh;
-    height: 90vh;
-    overflow: auto;
-}
-</style>
 <style lang="scss" scoped>
 .upload-zone {
     position: fixed;
@@ -275,10 +265,5 @@ export default class InstallPluginModal extends Vue {
     width: 10vw;
     height: 10vh;
     z-index: 999;
-}
-.container {
-    margin-top: 2vh;
-    height: 65vh;
-    overflow: auto;
 }
 </style>

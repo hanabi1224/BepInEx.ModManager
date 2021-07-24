@@ -114,6 +114,59 @@ namespace BepInEx.ModManager.Server.Services
             };
         }
 
+        public override async Task<ReadConfigResponse> ReadConfig(ReadConfigRequest request, ServerCallContext context)
+        {
+            return new()
+            {
+                Content = await File.ReadAllTextAsync(AddonRepoManager.Instance.ConfigFilePath).ConfigureAwait(false),
+            };
+        }
+
+        public override async Task<CommonServiceResponse> WriteConfig(WriteConfigRequest request, ServerCallContext context)
+        {
+            string content = request.Content;
+            try
+            {
+                AddonRepoConfig config = AddonRepoManager.s_yamlDeserializer.Deserialize<AddonRepoConfig>(content);
+                AddonRepoManager.Instance.SaveConfig(config);
+                return new()
+                {
+                    Success = true,
+                };
+            }
+            catch
+            {
+                return new()
+                {
+                    Success = false,
+                    Error = "File format is invalid",
+                };
+            }
+        }
+
+        public override async Task<CommonServiceResponse> AddGame(AddGameRequest request, ServerCallContext context)
+        {
+            if (InstallationUtils.IsUnityGameRoot(request.Path))
+            {
+                var config = AddonRepoManager.Instance.Config;
+                config.Games.Add(new()
+                {
+                    Name = string.IsNullOrWhiteSpace(request.Name) ? Path.GetFileName(request.Path).Trim() : request.Name.Trim(),
+                    Path = request.Path,
+                });
+                AddonRepoManager.Instance.SaveConfig(config);
+                return new() { Success = true };
+            }
+            else
+            {
+                return new()
+                {
+                    Success = false,
+                    Error = "Not a valid unity game",
+                };
+            }
+        }
+
         public static async Task<IList<GameInfo>> GetGamesAsync()
         {
             List<GameInfo> games = new();

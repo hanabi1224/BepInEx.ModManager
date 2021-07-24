@@ -10,6 +10,12 @@ Vue.use(VueMeta)
 Vue.config.productionTip = false;
 i18next.init()
 
+Vue.prototype.$message.config({
+    top: `20vh`,
+    duration: 1,
+    maxCount: 2,
+});
+
 new Vue({
     render: h => h(App),
 }).$mount('#app')

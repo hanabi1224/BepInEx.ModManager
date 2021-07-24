@@ -21,11 +21,11 @@ namespace BepInEx.ModManager.Server.Repo
     {
         private static readonly HttpClient s_client = new();
 
-        private static readonly IDeserializer s_yamlDeserializer = new DeserializerBuilder()
+        public static readonly IDeserializer s_yamlDeserializer = new DeserializerBuilder()
                 .WithNamingConvention(UnderscoredNamingConvention.Instance)
                 .Build();
 
-        private static readonly ISerializer s_yamlSerializer = new SerializerBuilder()
+        public static readonly ISerializer s_yamlSerializer = new SerializerBuilder()
                 .WithNamingConvention(UnderscoredNamingConvention.Instance)
                 .Build();
 

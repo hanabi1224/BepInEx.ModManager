@@ -15,8 +15,8 @@ import * as grpcWeb from 'grpc-web';
 
 import * as Common_pb from './Common_pb';
 import * as Game_pb from './Game_pb';
-import * as Service_pb from './Service_pb';
 import * as Repo_pb from './Repo_pb';
+import * as Service_pb from './Service_pb';
 
 
 export class ModManagerServiceClient {
@@ -356,6 +356,126 @@ export class ModManagerServiceClient {
     request,
     metadata || {},
     this.methodInfoUninstallPlugin);
+  }
+
+  methodInfoReadConfig = new grpcWeb.AbstractClientBase.MethodInfo(
+    Repo_pb.ReadConfigResponse,
+    (request: Repo_pb.ReadConfigRequest) => {
+      return request.serializeBinary();
+    },
+    Repo_pb.ReadConfigResponse.deserializeBinary
+  );
+
+  readConfig(
+    request: Repo_pb.ReadConfigRequest,
+    metadata: grpcWeb.Metadata | null): Promise<Repo_pb.ReadConfigResponse>;
+
+  readConfig(
+    request: Repo_pb.ReadConfigRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: Repo_pb.ReadConfigResponse) => void): grpcWeb.ClientReadableStream<Repo_pb.ReadConfigResponse>;
+
+  readConfig(
+    request: Repo_pb.ReadConfigRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.Error,
+               response: Repo_pb.ReadConfigResponse) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/BepInEx.ModManagerService/ReadConfig',
+        request,
+        metadata || {},
+        this.methodInfoReadConfig,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/BepInEx.ModManagerService/ReadConfig',
+    request,
+    metadata || {},
+    this.methodInfoReadConfig);
+  }
+
+  methodInfoWriteConfig = new grpcWeb.AbstractClientBase.MethodInfo(
+    Common_pb.CommonServiceResponse,
+    (request: Repo_pb.WriteConfigRequest) => {
+      return request.serializeBinary();
+    },
+    Common_pb.CommonServiceResponse.deserializeBinary
+  );
+
+  writeConfig(
+    request: Repo_pb.WriteConfigRequest,
+    metadata: grpcWeb.Metadata | null): Promise<Common_pb.CommonServiceResponse>;
+
+  writeConfig(
+    request: Repo_pb.WriteConfigRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
+
+  writeConfig(
+    request: Repo_pb.WriteConfigRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.Error,
+               response: Common_pb.CommonServiceResponse) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/BepInEx.ModManagerService/WriteConfig',
+        request,
+        metadata || {},
+        this.methodInfoWriteConfig,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/BepInEx.ModManagerService/WriteConfig',
+    request,
+    metadata || {},
+    this.methodInfoWriteConfig);
+  }
+
+  methodInfoAddGame = new grpcWeb.AbstractClientBase.MethodInfo(
+    Common_pb.CommonServiceResponse,
+    (request: Repo_pb.AddGameRequest) => {
+      return request.serializeBinary();
+    },
+    Common_pb.CommonServiceResponse.deserializeBinary
+  );
+
+  addGame(
+    request: Repo_pb.AddGameRequest,
+    metadata: grpcWeb.Metadata | null): Promise<Common_pb.CommonServiceResponse>;
+
+  addGame(
+    request: Repo_pb.AddGameRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
+
+  addGame(
+    request: Repo_pb.AddGameRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.Error,
+               response: Common_pb.CommonServiceResponse) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/BepInEx.ModManagerService/AddGame',
+        request,
+        metadata || {},
+        this.methodInfoAddGame,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/BepInEx.ModManagerService/AddGame',
+    request,
+    metadata || {},
+    this.methodInfoAddGame);
   }
 
   methodInfoLongConnect = new grpcWeb.AbstractClientBase.MethodInfo(

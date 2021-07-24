@@ -24,6 +24,12 @@ service ModManagerService {
 
   rpc UninstallPlugin (UninstallPluginRequest) returns (CommonServiceResponse);
 
+  rpc ReadConfig (ReadConfigRequest) returns (ReadConfigResponse);
+
+  rpc WriteConfig (WriteConfigRequest) returns (CommonServiceResponse);
+
+  rpc AddGame (AddGameRequest) returns (CommonServiceResponse);
+
   rpc LongConnect (LongConnectRequest) returns (stream LongConnectResponse);
 }
 

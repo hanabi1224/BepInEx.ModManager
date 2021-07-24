@@ -28,3 +28,19 @@ message ListPluginsResponse {
     repeated PluginInfo plugins = 1;
     repeated PatcherInfo patchers = 2;
 }
+
+message ReadConfigRequest {
+}
+
+message ReadConfigResponse {
+    string content = 1;
+}
+
+message WriteConfigRequest {
+    string content = 1;
+}
+
+message AddGameRequest {
+    string path = 1;
+    string name = 2;
+}

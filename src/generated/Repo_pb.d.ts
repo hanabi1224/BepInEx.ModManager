@@ -121,3 +121,75 @@ export namespace ListPluginsResponse {
   }
 }
 
+export class ReadConfigRequest extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ReadConfigRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ReadConfigRequest): ReadConfigRequest.AsObject;
+  static serializeBinaryToWriter(message: ReadConfigRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ReadConfigRequest;
+  static deserializeBinaryFromReader(message: ReadConfigRequest, reader: jspb.BinaryReader): ReadConfigRequest;
+}
+
+export namespace ReadConfigRequest {
+  export type AsObject = {
+  }
+}
+
+export class ReadConfigResponse extends jspb.Message {
+  getContent(): string;
+  setContent(value: string): ReadConfigResponse;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ReadConfigResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ReadConfigResponse): ReadConfigResponse.AsObject;
+  static serializeBinaryToWriter(message: ReadConfigResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ReadConfigResponse;
+  static deserializeBinaryFromReader(message: ReadConfigResponse, reader: jspb.BinaryReader): ReadConfigResponse;
+}
+
+export namespace ReadConfigResponse {
+  export type AsObject = {
+    content: string,
+  }
+}
+
+export class WriteConfigRequest extends jspb.Message {
+  getContent(): string;
+  setContent(value: string): WriteConfigRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): WriteConfigRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: WriteConfigRequest): WriteConfigRequest.AsObject;
+  static serializeBinaryToWriter(message: WriteConfigRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): WriteConfigRequest;
+  static deserializeBinaryFromReader(message: WriteConfigRequest, reader: jspb.BinaryReader): WriteConfigRequest;
+}
+
+export namespace WriteConfigRequest {
+  export type AsObject = {
+    content: string,
+  }
+}
+
+export class AddGameRequest extends jspb.Message {
+  getPath(): string;
+  setPath(value: string): AddGameRequest;
+
+  getName(): string;
+  setName(value: string): AddGameRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AddGameRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: AddGameRequest): AddGameRequest.AsObject;
+  static serializeBinaryToWriter(message: AddGameRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AddGameRequest;
+  static deserializeBinaryFromReader(message: AddGameRequest, reader: jspb.BinaryReader): AddGameRequest;
+}
+
+export namespace AddGameRequest {
+  export type AsObject = {
+    path: string,
+    name: string,
+  }
+}
+

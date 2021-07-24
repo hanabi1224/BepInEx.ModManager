@@ -1,1 +1,19 @@
 @import 'ant-design-vue/dist/antd.css';
+
+.ant-modal-content {
+    position: fixed;
+    left: 10vw;
+    width: 80vw;
+    top: 5vh;
+    height: 90vh;
+    overflow: auto;
+    .container {
+        margin-top: 2vh;
+        height: 65vh;
+        overflow: auto;
+    }
+}
+
+.CodeMirror {
+    height: 100%;
+}
