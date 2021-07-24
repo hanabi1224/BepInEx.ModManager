@@ -20,6 +20,7 @@
                     :file-list="[]"
                     :show-upload-list="false"
                     accept=".dll"
+                    action="/404"
                     @beforeUpload="handleAddGameBeforeUpload"
                     @change="handleAddGameChange"
                 >
