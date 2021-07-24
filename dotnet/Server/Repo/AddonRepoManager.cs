@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BepInEx.ModManager.Shared;
 using DotNet.Globbing;
@@ -18,7 +19,7 @@ namespace BepInEx.ModManager.Server.Repo
 {
     public class AddonRepoManager
     {
-        private static readonly HttpClient s_client = new HttpClient();
+        private static readonly HttpClient s_client = new();
 
         private static readonly IDeserializer s_yamlDeserializer = new DeserializerBuilder()
                 .WithNamingConvention(UnderscoredNamingConvention.Instance)
@@ -32,15 +33,20 @@ namespace BepInEx.ModManager.Server.Repo
 
         private const string ConfigFileName = "config.yaml";
 
+        // Mutex?
+        private readonly SemaphoreSlim _lockUpdateBuckets = new(1, 1);
+
         private static Logger Logger { get; } = LogManager.GetCurrentClassLogger();
 
-        public static AddonRepoManager Instance { get; } = new AddonRepoManager();
+        public static AddonRepoManager Instance { get; } = new();
 
         public string RootPath { get; } = GetRootPath();
 
         public string ConfigFilePath => Path.Combine(RootPath, ConfigFileName);
 
         public string PluginStoreRoot => Path.Combine(RootPath, "plugins");
+
+        public string UrlCacheDir => Path.Combine(RootPath, ".url");
 
         public AddonRepoConfig Config { get; private set; }
 
@@ -112,7 +118,7 @@ namespace BepInEx.ModManager.Server.Repo
 
         public async Task<IList<PluginInfo>> LoadLocalPluginsAsync()
         {
-            List<PluginInfo> plugins = new List<PluginInfo>();
+            List<PluginInfo> plugins = new();
             foreach (string file in Directory.EnumerateFiles(PluginStoreRoot, "*.dll", SearchOption.AllDirectories))
             {
                 try
@@ -136,7 +142,7 @@ namespace BepInEx.ModManager.Server.Repo
                         }
                         if (!string.IsNullOrEmpty(meta?.Id))
                         {
-                            plugins.Add(new PluginInfo
+                            plugins.Add(new()
                             {
                                 Path = file,
                                 Id = meta.Id,
@@ -154,37 +160,118 @@ namespace BepInEx.ModManager.Server.Repo
             return plugins;
         }
 
-        public async Task UpdateBucketAsync()
+        public async Task UpdateBucketsAsync()
         {
-            HashSet<string> visited = new HashSet<string>();
-            foreach (AddonRepoBucketConfig b in Config.Buckets)
+            if (!await _lockUpdateBuckets.WaitAsync(0).ConfigureAwait(false))
             {
-                await UpdateBucketInnerAsync(b, visited);
+                return;
+            }
+            try
+            {
+                // TODO: Thread safty
+                HashSet<string> visited = new HashSet<string>();
+                List<Task> tasks = new(Config.Buckets.Count);
+                foreach (AddonRepoBucketConfig b in Config.Buckets.Distinct(AddonRepoBucketConfig.EqualityComparer.Instance))
+                {
+                    tasks.Add(UpdateBucketInnerAsync(b, visited));
+                }
+                await Task.WhenAll(tasks).ConfigureAwait(false);
+            }
+            finally
+            {
+                _lockUpdateBuckets.Release();
             }
         }
 
-        private async Task UpdateBucketInnerAsync(AddonRepoBucketConfig bucket, ISet<string> visited)
+        private async Task<bool> UpdateBucketInnerAsync(AddonRepoBucketConfig bucket, ISet<string> visited)
         {
             if (string.IsNullOrEmpty(bucket.Url) || visited.Contains(bucket.Url))
             {
-                return;
+                return false;
             }
             if (!Uri.TryCreate(bucket.Url, UriKind.Absolute, out Uri uri))
             {
-                return;
+                return false;
             }
             Logger.Info($"Checking bucket url {bucket.Url}");
             visited.Add(bucket.Url);
+
+            string urlKey = HashUtils.GetMD5String(bucket.Url);
+            string urlCacheFilePath = Path.Combine(UrlCacheDir, urlKey);
+            UrlChangeDetectionHeaders urlCache = null;
+            bool isUrlCacheChanged = false;
+            bool isUrlCacheFileExpired = false;
+            if (File.Exists(urlCacheFilePath))
+            {
+                try
+                {
+                    isUrlCacheFileExpired = new FileInfo(urlCacheFilePath).LastWriteTimeUtc.AddDays(1) < DateTimeOffset.UtcNow.UtcDateTime;
+                    urlCache = JsonConvert.DeserializeObject<UrlChangeDetectionHeaders>(File.ReadAllText(urlCacheFilePath));
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+            if (urlCache == null)
+            {
+                urlCache = new();
+            }
+
+            bool hasErrors = false;
             try
             {
-                byte[] bytes = await s_client.GetByteArrayAsync(uri).ConfigureAwait(false);
+                HttpResponseMessage response = await s_client.GetAsync(uri).ConfigureAwait(false);
+                string etag = null;
+                if (response.Headers.TryGetValues("ETag", out IEnumerable<string> etagHeaderValues))
+                {
+                    etag = etagHeaderValues.FirstOrDefault();
+                }
+                string lastModifiedStr = null;
+                if (response.Headers.TryGetValues("Last-Modified", out IEnumerable<string> lmHeaderValues))
+                {
+                    lastModifiedStr = lmHeaderValues.FirstOrDefault();
+                }
+                if (!string.IsNullOrEmpty(etag))
+                {
+                    if (etag == urlCache.ETag)
+                    {
+                        if (!isUrlCacheFileExpired)
+                        {
+                            Logger.Info("ETag cache hit");
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        urlCache.ETag = etag;
+                        isUrlCacheChanged = true;
+                    }
+                }
+                if (!string.IsNullOrEmpty(lastModifiedStr) && DateTimeOffset.TryParse(lastModifiedStr, out DateTimeOffset lastModified))
+                {
+                    if (lastModified == urlCache.LastModified)
+                    {
+                        if (!isUrlCacheChanged && !isUrlCacheFileExpired)
+                        {
+                            Logger.Info("Last-Modified cache hit");
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        urlCache.LastModified = lastModified;
+                        isUrlCacheChanged = true;
+                    }
+                }
+
+                byte[] bytes = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 string str = Encoding.UTF8.GetString(bytes);
                 List<AddonRepoBucketConfig> innerBuckets = null;
                 // json
                 try
                 {
                     innerBuckets = JsonConvert.DeserializeObject<List<AddonRepoBucketConfig>>(str);
-
                 }
                 catch { }
                 // yaml
@@ -198,11 +285,9 @@ namespace BepInEx.ModManager.Server.Repo
                 }
                 if (innerBuckets != null)
                 {
-                    foreach (AddonRepoBucketConfig b in innerBuckets)
-                    {
-                        await UpdateBucketInnerAsync(b, visited).ConfigureAwait(false);
-                    }
-                    return;
+                    Task[] tasks = innerBuckets.Distinct(AddonRepoBucketConfig.EqualityComparer.Instance).Select(b => UpdateBucketInnerAsync(b, visited)).ToArray();
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
+                    return true;
                 }
 
                 // webpage
@@ -210,7 +295,7 @@ namespace BepInEx.ModManager.Server.Repo
                 {
                     try
                     {
-                        HtmlDocument html = new HtmlDocument();
+                        HtmlDocument html = new();
                         html.LoadHtml(str);
                         HtmlNodeCollection anchors = html.DocumentNode.SelectNodes("//a");
                         if (anchors?.Count > 0)
@@ -227,6 +312,8 @@ namespace BepInEx.ModManager.Server.Repo
                             }
                             if (globs.Count > 0)
                             {
+
+                                List<AddonRepoBucketConfig> innerBucketConfigs = new();
                                 foreach (string url in hrefs.Where(url => !string.IsNullOrEmpty(url) && globs.Any(g => g.IsMatch(url))))
                                 {
                                     bool isAbsolute = url.StartsWith("http://") || url.StartsWith("https://");
@@ -234,40 +321,81 @@ namespace BepInEx.ModManager.Server.Repo
                                     {
                                         Path = url
                                     }.ToString();
-                                    await UpdateBucketInnerAsync(new AddonRepoBucketConfig { Url = absUrl }, visited).ConfigureAwait(false);
+                                    innerBucketConfigs.Add(new() { Url = absUrl });
                                 }
+                                Task[] tasks = innerBucketConfigs.Distinct(AddonRepoBucketConfig.EqualityComparer.Instance).Select(b => UpdateBucketInnerAsync(b, visited)).ToArray();
+                                await Task.WhenAll(tasks).ConfigureAwait(false);
                             }
-                            return;
+                            return true;
                         }
                     }
                     catch { }
                 }
 
-                try
+                if (await TryAddPlugArchive(bytes).ConfigureAwait(false))
                 {
-                    using MemoryStream ms = new MemoryStream(bytes) { Position = 0 };
-                    using ZipArchive zip = new ZipArchive(ms);
-                    foreach (ZipArchiveEntry entry in zip.Entries)
-                    {
-                        if (entry.FullName.EndsWith(".dll"))
-                        {
-                            using TempDir tempDir = new TempDir();
-                            string destPath = Path.Combine(tempDir.Dir, Path.GetFileName(entry.FullName));
-                            using (FileStream fileStream = File.OpenWrite(destPath))
-                            {
-                                using Stream entryStream = entry.Open();
-                                await entryStream.CopyToAsync(fileStream).ConfigureAwait(false);
-                            }
-                            await AddPluginAsync(destPath, overwrite: true);
-                        }
-                    }
+                    return true;
                 }
-                catch { }
             }
             catch (Exception oe)
             {
+                hasErrors = true;
                 Logger.Error(oe);
             }
+            finally
+            {
+                if (!hasErrors && isUrlCacheChanged && urlCache.IsValid())
+                {
+                    if (!Directory.Exists(UrlCacheDir))
+                    {
+                        Directory.CreateDirectory(UrlCacheDir);
+                    }
+                    File.WriteAllText(urlCacheFilePath, JsonConvert.SerializeObject(urlCache));
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> TryAddPlugArchive(byte[] bytes)
+        {
+            try
+            {
+                using MemoryStream ms = new(bytes) { Position = 0 };
+                using ZipArchive zip = new(ms);
+                foreach (ZipArchiveEntry entry in zip.Entries)
+                {
+                    if (entry.FullName.EndsWith(".dll"))
+                    {
+                        await TryAddDllAsync(entry.FullName, entry.Open()).ConfigureAwait(false);
+                    }
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return false;
+            }
+        }
+
+        public async Task<bool> TryAddDllAsync(string fileName, Stream stream)
+        {
+            try
+            {
+                using TempDir tempDir = new();
+                string destPath = Path.Combine(tempDir.Dir, Path.GetFileName(fileName));
+                using (FileStream fileStream = File.OpenWrite(destPath))
+                {
+                    await stream.CopyToAsync(fileStream).ConfigureAwait(false);
+                }
+                BepInExAssemblyInfo r = await AddPluginAsync(destPath, overwrite: true).ConfigureAwait(false);
+                return r != null;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+            return false;
         }
 
         private AddonRepoConfig LoadConfig()
@@ -320,6 +448,18 @@ namespace BepInEx.ModManager.Server.Repo
             }
 
             return root;
+        }
+    }
+
+    public class UrlChangeDetectionHeaders
+    {
+        public DateTimeOffset LastModified { get; set; }
+
+        public string ETag { get; set; }
+
+        public bool IsValid()
+        {
+            return !string.IsNullOrEmpty(ETag) || LastModified.AddYears(100) > DateTimeOffset.Now;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace BepInEx.ModManager.Server.Repo
@@ -27,25 +28,25 @@ namespace BepInEx.ModManager.Server.Repo
 # Index files should be a list of buckets
 ";
 
-        public static AddonRepoConfig Default { get; } = new AddonRepoConfig
+        public static AddonRepoConfig Default { get; } = new()
         {
-            Games = new List<AddonRepoGameConfig>(),
-            Buckets = new List<AddonRepoBucketConfig>
+            Games = new(),
+            Buckets = new()
             {
-                new AddonRepoBucketConfig
+                new()
                 {
-                    Name= "BepInEx.Utility",
-                    Url="https://github.com/BepInEx/BepInEx.Utility/releases/latest",
-                    Patterns = new List<string>
+                    Name = "BepInEx.Utility",
+                    Url = "https://github.com/BepInEx/BepInEx.Utility/releases/latest",
+                    Patterns = new()
                     {
                         "**/BepInEx.*.zip"
                     },
                 },
-                new AddonRepoBucketConfig
+                new()
                 {
-                    Name= "BepInEx.ConfigurationManager",
-                    Url="https://github.com/BepInEx/BepInEx.ConfigurationManager/releases/latest",
-                    Patterns = new List<string>
+                    Name = "BepInEx.ConfigurationManager",
+                    Url = "https://github.com/BepInEx/BepInEx.ConfigurationManager/releases/latest",
+                    Patterns = new()
                     {
                         "**/BepInEx.*.zip"
                     },
@@ -77,5 +78,20 @@ namespace BepInEx.ModManager.Server.Repo
         [JsonProperty("patterns")]
 
         public List<string> Patterns { get; set; }
+
+        public class EqualityComparer : IEqualityComparer<AddonRepoBucketConfig>
+        {
+            public static IEqualityComparer<AddonRepoBucketConfig> Instance { get; } = new EqualityComparer();
+
+            public bool Equals(AddonRepoBucketConfig x, AddonRepoBucketConfig y)
+            {
+                return x.Url == y.Url;
+            }
+
+            public int GetHashCode([DisallowNull] AddonRepoBucketConfig obj)
+            {
+                return obj.Url.GetHashCode();
+            }
+        }
     }
 }

@@ -8,9 +8,14 @@ const serverPort = 40003;
 const cwd = process.cwd();
 logger.info(cwd);
 logger.info(__dirname);
-process.chdir(path.join(cwd, 'out', 'server'))
-spawn("BepInEx.ModManager.Server", `--server true --port ${serverPort}`.split(' '))
-process.chdir(cwd)
+const serverExe = path.join(cwd, 'out', 'server', 'BepInEx.ModManager.Server.exe')
+const server = spawn(serverExe, `--server true --port ${serverPort}`.split(' '))
+server.stdout.on("data", function (data) {
+   console.log(data.toString());
+});
+server.stdout.on("error", function (err) {
+   console.error(err.toString());
+});
 
 autoUpdater.logger = logger;
 autoUpdater.logger.transports.file.level = 'info';

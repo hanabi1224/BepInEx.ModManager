@@ -4,6 +4,7 @@ package BepInEx;
 
 import "Common.proto";
 import "Game.proto";
+import "Repo.proto";
 
 service ModManagerService {
 
@@ -13,9 +14,15 @@ service ModManagerService {
 
   rpc UninstallBIE (UninstallBIERequest) returns (CommonServiceResponse);
 
+  rpc CheckPluginUpdates (CheckPluginUpdatesRequest) returns (CommonServiceResponse);
+
+  rpc ListPlugins (ListPluginsRequest) returns (ListPluginsResponse);
+
   rpc AddPluginToRepo (AddPluginToRepoRequest) returns (CommonServiceResponse);
 
   rpc InstallPlugin (InstallPluginRequest) returns (CommonServiceResponse);
+
+  rpc UninstallPlugin (UninstallPluginRequest) returns (CommonServiceResponse);
 
   rpc LongConnect (LongConnectRequest) returns (stream LongConnectResponse);
 }

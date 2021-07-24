@@ -16,6 +16,7 @@ import * as grpcWeb from 'grpc-web';
 import * as Common_pb from './Common_pb';
 import * as Game_pb from './Game_pb';
 import * as Service_pb from './Service_pb';
+import * as Repo_pb from './Repo_pb';
 
 
 export class ModManagerServiceClient {
@@ -157,26 +158,106 @@ export class ModManagerServiceClient {
     this.methodInfoUninstallBIE);
   }
 
+  methodInfoCheckPluginUpdates = new grpcWeb.AbstractClientBase.MethodInfo(
+    Common_pb.CommonServiceResponse,
+    (request: Repo_pb.CheckPluginUpdatesRequest) => {
+      return request.serializeBinary();
+    },
+    Common_pb.CommonServiceResponse.deserializeBinary
+  );
+
+  checkPluginUpdates(
+    request: Repo_pb.CheckPluginUpdatesRequest,
+    metadata: grpcWeb.Metadata | null): Promise<Common_pb.CommonServiceResponse>;
+
+  checkPluginUpdates(
+    request: Repo_pb.CheckPluginUpdatesRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
+
+  checkPluginUpdates(
+    request: Repo_pb.CheckPluginUpdatesRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.Error,
+               response: Common_pb.CommonServiceResponse) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/BepInEx.ModManagerService/CheckPluginUpdates',
+        request,
+        metadata || {},
+        this.methodInfoCheckPluginUpdates,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/BepInEx.ModManagerService/CheckPluginUpdates',
+    request,
+    metadata || {},
+    this.methodInfoCheckPluginUpdates);
+  }
+
+  methodInfoListPlugins = new grpcWeb.AbstractClientBase.MethodInfo(
+    Repo_pb.ListPluginsResponse,
+    (request: Repo_pb.ListPluginsRequest) => {
+      return request.serializeBinary();
+    },
+    Repo_pb.ListPluginsResponse.deserializeBinary
+  );
+
+  listPlugins(
+    request: Repo_pb.ListPluginsRequest,
+    metadata: grpcWeb.Metadata | null): Promise<Repo_pb.ListPluginsResponse>;
+
+  listPlugins(
+    request: Repo_pb.ListPluginsRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: Repo_pb.ListPluginsResponse) => void): grpcWeb.ClientReadableStream<Repo_pb.ListPluginsResponse>;
+
+  listPlugins(
+    request: Repo_pb.ListPluginsRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.Error,
+               response: Repo_pb.ListPluginsResponse) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/BepInEx.ModManagerService/ListPlugins',
+        request,
+        metadata || {},
+        this.methodInfoListPlugins,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/BepInEx.ModManagerService/ListPlugins',
+    request,
+    metadata || {},
+    this.methodInfoListPlugins);
+  }
+
   methodInfoAddPluginToRepo = new grpcWeb.AbstractClientBase.MethodInfo(
     Common_pb.CommonServiceResponse,
-    (request: Game_pb.AddPluginToRepoRequest) => {
+    (request: Repo_pb.AddPluginToRepoRequest) => {
       return request.serializeBinary();
     },
     Common_pb.CommonServiceResponse.deserializeBinary
   );
 
   addPluginToRepo(
-    request: Game_pb.AddPluginToRepoRequest,
+    request: Repo_pb.AddPluginToRepoRequest,
     metadata: grpcWeb.Metadata | null): Promise<Common_pb.CommonServiceResponse>;
 
   addPluginToRepo(
-    request: Game_pb.AddPluginToRepoRequest,
+    request: Repo_pb.AddPluginToRepoRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.Error,
                response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   addPluginToRepo(
-    request: Game_pb.AddPluginToRepoRequest,
+    request: Repo_pb.AddPluginToRepoRequest,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.Error,
                response: Common_pb.CommonServiceResponse) => void) {
@@ -199,24 +280,24 @@ export class ModManagerServiceClient {
 
   methodInfoInstallPlugin = new grpcWeb.AbstractClientBase.MethodInfo(
     Common_pb.CommonServiceResponse,
-    (request: Game_pb.InstallPluginRequest) => {
+    (request: Repo_pb.InstallPluginRequest) => {
       return request.serializeBinary();
     },
     Common_pb.CommonServiceResponse.deserializeBinary
   );
 
   installPlugin(
-    request: Game_pb.InstallPluginRequest,
+    request: Repo_pb.InstallPluginRequest,
     metadata: grpcWeb.Metadata | null): Promise<Common_pb.CommonServiceResponse>;
 
   installPlugin(
-    request: Game_pb.InstallPluginRequest,
+    request: Repo_pb.InstallPluginRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.Error,
                response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   installPlugin(
-    request: Game_pb.InstallPluginRequest,
+    request: Repo_pb.InstallPluginRequest,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.Error,
                response: Common_pb.CommonServiceResponse) => void) {
@@ -235,6 +316,46 @@ export class ModManagerServiceClient {
     request,
     metadata || {},
     this.methodInfoInstallPlugin);
+  }
+
+  methodInfoUninstallPlugin = new grpcWeb.AbstractClientBase.MethodInfo(
+    Common_pb.CommonServiceResponse,
+    (request: Repo_pb.UninstallPluginRequest) => {
+      return request.serializeBinary();
+    },
+    Common_pb.CommonServiceResponse.deserializeBinary
+  );
+
+  uninstallPlugin(
+    request: Repo_pb.UninstallPluginRequest,
+    metadata: grpcWeb.Metadata | null): Promise<Common_pb.CommonServiceResponse>;
+
+  uninstallPlugin(
+    request: Repo_pb.UninstallPluginRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
+
+  uninstallPlugin(
+    request: Repo_pb.UninstallPluginRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.Error,
+               response: Common_pb.CommonServiceResponse) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/BepInEx.ModManagerService/UninstallPlugin',
+        request,
+        metadata || {},
+        this.methodInfoUninstallPlugin,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/BepInEx.ModManagerService/UninstallPlugin',
+    request,
+    metadata || {},
+    this.methodInfoUninstallPlugin);
   }
 
   methodInfoLongConnect = new grpcWeb.AbstractClientBase.MethodInfo(

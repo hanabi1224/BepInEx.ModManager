@@ -37,20 +37,10 @@ message PatcherInfo {
 }
 
 message InstallBIERequest {
-    string path = 1;
+    string gamePath = 1;
     bool force = 2;
 }
 
 message UninstallBIERequest {
-    string path = 1;
-}
-
-message InstallPluginRequest {
-    string pluginPath = 1;
-    string gamePath = 2;
-}
-
-message AddPluginToRepoRequest {
-    bytes data = 1;
-    string fileName = 2;
+    string gamePath = 1;
 }

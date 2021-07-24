@@ -47,7 +47,7 @@ namespace BepInEx.ModManager.DllReader
                         BepInPlugin pluginAttribute = t.GetCustomAttribute<BepInPlugin>();
                         if (pluginAttribute != null)
                         {
-                            BepInExAssemblyInfo pluginInfo = new BepInExAssemblyInfo
+                            BepInExAssemblyInfo pluginInfo = new()
                             {
                                 Type = BepInExAssemblyType.Plugin,
                                 Id = pluginAttribute.GUID,
@@ -58,6 +58,20 @@ namespace BepInEx.ModManager.DllReader
                             return;
                         }
                     }
+                    // TODO: Detetct patcher infomation
+                    //foreach (TypeInfo t in assembly.DefinedTypes)
+                    //{
+                    //    BepInExAssemblyInfo patcherInfo = new()
+                    //    {
+                    //        Type = BepInExAssemblyType.Patcher,
+                    //        Id = pluginAttribute.GUID,
+                    //        Name = pluginAttribute.Name,
+                    //        Version = pluginAttribute.Version.ToString(),
+                    //    };
+                    //    Console.WriteLine(JsonConvert.SerializeObject(patcherInfo));
+                    //    return;
+                    //}
+                    return;
                 }
                 catch (ReflectionTypeLoadException rtle)
                 {
@@ -80,7 +94,7 @@ namespace BepInEx.ModManager.DllReader
                 if (match.Success && Version.TryParse(match.Groups["version"].Value.Trim(), out Version version))
                 {
                     string name = Path.GetFileNameWithoutExtension(path);
-                    BepInExAssemblyInfo pluginInfo = new BepInExAssemblyInfo
+                    BepInExAssemblyInfo pluginInfo = new()
                     {
                         Type = BepInExAssemblyType.Unknown,
                         Id = name,

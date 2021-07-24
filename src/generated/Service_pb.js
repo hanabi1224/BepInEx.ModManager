@@ -19,6 +19,8 @@ var Common_pb = require('./Common_pb.js');
 goog.object.extend(proto, Common_pb);
 var Game_pb = require('./Game_pb.js');
 goog.object.extend(proto, Game_pb);
+var Repo_pb = require('./Repo_pb.js');
+goog.object.extend(proto, Repo_pb);
 goog.exportSymbol('proto.BepInEx.LongConnectRequest', null, global);
 goog.exportSymbol('proto.BepInEx.LongConnectResponse', null, global);
 goog.exportSymbol('proto.BepInEx.ServerSideNotification', null, global);

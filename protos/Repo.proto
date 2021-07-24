@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package BepInEx;
+
+import "Game.proto";
+
+message CheckPluginUpdatesRequest {
+}
+
+message InstallPluginRequest {
+    string pluginPath = 1;
+    string gamePath = 2;
+}
+
+message UninstallPluginRequest {
+    string pluginPath = 1;
+}
+
+message AddPluginToRepoRequest {
+    bytes data = 1;
+    string fileName = 2;
+}
+
+message ListPluginsRequest {
+}
+
+message ListPluginsResponse {
+    repeated PluginInfo plugins = 1;
+    repeated PatcherInfo patchers = 2;
+}

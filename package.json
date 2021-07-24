@@ -1,5 +1,5 @@
 {
-  "name": "bepinex-mod-manager",
+  "name": "bie-mod-manager",
   "description": "A general BepInEx mod manager",
   "version": "0.1.0",
   "license": "MIT",
@@ -11,6 +11,7 @@
   "main": "out/main.js",
   "build": {
     "appId": "BepInEx.ModManager",
+    "productName": "BepInEx.ModManager",
     "win": {
       "target": "nsis"
     },
@@ -23,7 +24,7 @@
   },
   "scripts": {
     "dist": "yarn clean && yarn build && electron-builder",
-    "server": "dotnet publish dotnet/Server -c Release --self-contained -r win-x64 -o out/server",
+    "server": "dotnet publish dotnet/Server -c Release -v m --self-contained -r win-x64 /p:PublishSingleFile=true -o out/server",
     "build": "parcel build src/main.ts src/*.html -t electron -d out --public-url . --no-source-maps && yarn server",
     "start": "yarn build && electron out/main.js",
     "watch": "parcel watch src/main.ts src/*.html -t electron -d out --public-url .",

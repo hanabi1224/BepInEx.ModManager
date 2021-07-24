@@ -155,8 +155,8 @@ export namespace PatcherInfo {
 }
 
 export class InstallBIERequest extends jspb.Message {
-  getPath(): string;
-  setPath(value: string): InstallBIERequest;
+  getGamepath(): string;
+  setGamepath(value: string): InstallBIERequest;
 
   getForce(): boolean;
   setForce(value: boolean): InstallBIERequest;
@@ -171,14 +171,14 @@ export class InstallBIERequest extends jspb.Message {
 
 export namespace InstallBIERequest {
   export type AsObject = {
-    path: string,
+    gamepath: string,
     force: boolean,
   }
 }
 
 export class UninstallBIERequest extends jspb.Message {
-  getPath(): string;
-  setPath(value: string): UninstallBIERequest;
+  getGamepath(): string;
+  setGamepath(value: string): UninstallBIERequest;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UninstallBIERequest.AsObject;
@@ -190,53 +190,7 @@ export class UninstallBIERequest extends jspb.Message {
 
 export namespace UninstallBIERequest {
   export type AsObject = {
-    path: string,
-  }
-}
-
-export class InstallPluginRequest extends jspb.Message {
-  getPluginpath(): string;
-  setPluginpath(value: string): InstallPluginRequest;
-
-  getGamepath(): string;
-  setGamepath(value: string): InstallPluginRequest;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): InstallPluginRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: InstallPluginRequest): InstallPluginRequest.AsObject;
-  static serializeBinaryToWriter(message: InstallPluginRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): InstallPluginRequest;
-  static deserializeBinaryFromReader(message: InstallPluginRequest, reader: jspb.BinaryReader): InstallPluginRequest;
-}
-
-export namespace InstallPluginRequest {
-  export type AsObject = {
-    pluginpath: string,
     gamepath: string,
-  }
-}
-
-export class AddPluginToRepoRequest extends jspb.Message {
-  getData(): Uint8Array | string;
-  getData_asU8(): Uint8Array;
-  getData_asB64(): string;
-  setData(value: Uint8Array | string): AddPluginToRepoRequest;
-
-  getFilename(): string;
-  setFilename(value: string): AddPluginToRepoRequest;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AddPluginToRepoRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: AddPluginToRepoRequest): AddPluginToRepoRequest.AsObject;
-  static serializeBinaryToWriter(message: AddPluginToRepoRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AddPluginToRepoRequest;
-  static deserializeBinaryFromReader(message: AddPluginToRepoRequest, reader: jspb.BinaryReader): AddPluginToRepoRequest;
-}
-
-export namespace AddPluginToRepoRequest {
-  export type AsObject = {
-    data: Uint8Array | string,
-    filename: string,
   }
 }
 

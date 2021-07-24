@@ -20,7 +20,7 @@ namespace BepInEx.ModManager.Server
             {
                 throw new InvalidOperationException("file tool not found.");
             }
-            ProcessStartInfo psi = new ProcessStartInfo
+            ProcessStartInfo psi = new()
             {
                 WorkingDirectory = pwd,
                 FileName = exe,
@@ -44,7 +44,7 @@ namespace BepInEx.ModManager.Server
             {
                 throw new InvalidOperationException("dllreader tool not found.");
             }
-            ProcessStartInfo psi = new ProcessStartInfo
+            ProcessStartInfo psi = new()
             {
                 WorkingDirectory = pwd,
                 FileName = exe,
@@ -74,7 +74,7 @@ namespace BepInEx.ModManager.Server
                 Logger.Error(e);
             }
 
-            return new BepInExAssemblyInfo { Type = BepInExAssemblyType.Unknown };
+            return new() { Type = BepInExAssemblyType.Unknown };
         }
     }
 }

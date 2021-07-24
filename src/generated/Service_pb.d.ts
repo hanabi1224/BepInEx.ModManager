@@ -2,6 +2,7 @@ import * as jspb from 'google-protobuf'
 
 import * as Common_pb from './Common_pb';
 import * as Game_pb from './Game_pb';
+import * as Repo_pb from './Repo_pb';
 
 
 export class LongConnectRequest extends jspb.Message {
