@@ -180,11 +180,7 @@ namespace BepInEx.ModManager.Server.Repo
             {
                 // TODO: Thread safty
                 HashSet<string> visited = new HashSet<string>();
-                List<Task> tasks = new(Config.Buckets.Count);
-                foreach (AddonRepoBucketConfig b in Config.Buckets.Distinct(AddonRepoBucketConfig.EqualityComparer.Instance))
-                {
-                    tasks.Add(UpdateBucketInnerAsync(b, visited));
-                }
+                List<Task> tasks = new();
 
                 if (ModManagerServiceImpl.GameSnapshot?.Count > 0)
                 {
@@ -201,6 +197,11 @@ namespace BepInEx.ModManager.Server.Repo
                             Url = url,
                         }, visited));
                     }
+                }
+
+                foreach (AddonRepoBucketConfig b in Config.Buckets.Distinct(AddonRepoBucketConfig.EqualityComparer.Instance))
+                {
+                    tasks.Add(UpdateBucketInnerAsync(b, visited));
                 }
 
                 await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -222,6 +223,10 @@ namespace BepInEx.ModManager.Server.Repo
                 return false;
             }
             Logger.Info($"Checking bucket url {bucket.Url}");
+            await ClientNotification.WriteAsync(new()
+            {
+                Message = $"Checking mod updates in repo {bucket.Url}",
+            }).ConfigureAwait(false);
             visited.Add(bucket.Url);
 
             string urlKey = HashUtils.GetMD5String(bucket.Url);

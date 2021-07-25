@@ -130,7 +130,9 @@ namespace BepInEx.ModManager.Server
                                     .OrderByDescending(_ => _) // Latest version
                                     .FirstOrDefault();
                             }
-                            if (!string.IsNullOrEmpty(localRefFile) && File.Exists(localRefFile))
+                            if (!string.IsNullOrEmpty(localRefFile)
+                                && File.Exists(localRefFile)
+                                && localRefFile != pluginPath)
                             {
                                 foreach (string dup in Directory.EnumerateFiles(destDir, $"{reference.Name}.dll", SearchOption.AllDirectories))
                                 {
@@ -145,8 +147,7 @@ namespace BepInEx.ModManager.Server
                                     }
                                 }
 
-                                string destRefFile = Path.Combine(destDir, $"{reference.Name}.dll");
-                                File.Copy(localRefFile, destRefFile, true);
+                                await IntallPluginAsync(gamePath: gamePath, pluginPath: localRefFile);
                                 Logger.Info($"Dependency installed: {reference.Name}.dll");
                             }
                         }

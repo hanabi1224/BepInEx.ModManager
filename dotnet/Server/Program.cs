@@ -25,22 +25,23 @@ namespace BepInEx.ModManager.Server
             {
                 _ = Task.Run(async () =>
                 {
-                    for (var i = 0; ModManagerServiceImpl.GameSnapshot?.Count == 0 && i < 30; i++)
+                    for (int i = 0; i < 30; i++)
                     {
                         await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+                        if (ModManagerServiceImpl.GameSnapshot?.Count > 0)
+                        {
+                            break;
+                        }
                     }
                     if (ModManagerServiceImpl.GameSnapshot?.Count == 0)
                     {
                         await ModManagerServiceImpl.GetGamesAsync().ConfigureAwait(false);
                     }
                     await Repo.AddonRepoManager.Instance.UpdateBucketsAsync().ConfigureAwait(false);
-                    if (ClientNotification.ChannelWriter != null)
+                    await ClientNotification.WriteAsync(new()
                     {
-                        await ClientNotification.ChannelWriter.WriteAsync(new()
-                        {
-                            Notification = ServerSideNotification.RefreshRepoInfo,
-                        }).ConfigureAwait(false);
-                    }
+                        Notification = ServerSideNotification.RefreshRepoInfo,
+                    }).ConfigureAwait(false);
                 });
                 await CreateHostBuilder(port).Build().RunAsync().ConfigureAwait(false);
             }

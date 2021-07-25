@@ -5,20 +5,9 @@ import path from 'path';
 import { spawn } from "child_process";
 import osLocale from 'os-locale';
 import i18next from 'i18next';
-import en from './i18n/en';
-import zh from './i18n/zh';
+import i18nConfig from './i18n/config';
 
-i18next.init({
-   supportedLngs: ['en', 'zh'],
-   resources: {
-      zh: {
-         translation: zh
-      },
-      en: {
-         translation: en
-      }
-   }
-})
+i18next.init(i18nConfig)
 
 app.setAppUserModelId("BepInEx.ModManager");
 app.setAsDefaultProtocolClient('biemm');

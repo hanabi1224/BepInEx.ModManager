@@ -2,7 +2,8 @@
 
 - i18n
 - Add default mod Repo for steam games
-
+- Handle indirect dependencies when installing mods
+  
 ## 0.1.2
 
 - Remove .NET framework dependency

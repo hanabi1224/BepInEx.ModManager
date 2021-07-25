@@ -3,23 +3,11 @@ import Antd from 'ant-design-vue';
 import VueMeta from 'vue-meta';
 import App from './App.vue';
 import i18next from 'i18next';
-import en from './i18n/en';
-import zh from './i18n/zh';
+import i18nConfig from './i18n/config';
 import osLocale from 'os-locale';
 import { ipcRenderer } from 'electron';
 
-i18next.init({
-    // debug: true,
-    supportedLngs: ['en', 'zh'],
-    resources: {
-        zh: {
-            translation: zh
-        },
-        en: {
-            translation: en
-        }
-    }
-})
+i18next.init(i18nConfig)
 
 osLocale().then(async () => {
     const locale = await osLocale();

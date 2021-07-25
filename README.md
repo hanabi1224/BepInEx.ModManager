@@ -22,6 +22,10 @@ windows
 - Automatically detect and download plugin updates
 - Automatical self update via electron-updater
 
+## Known Issues
+
+- It does not support external mod resource files, embed them into mod DLL instead using [embedded resource](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly.getmanifestresourcestream?view=net-5.0#System_Reflection_Assembly_GetManifestResourceStream_System_String_).
+
 ## Installation
 
 Download and install from the [release](https://github.com/hanabi1224/BepInEx.ModManager/releases/latest) page for the first time.
