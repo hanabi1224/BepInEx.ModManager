@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace BepInEx.ModManager.Server
+namespace BepInEx.ModManager.Shared
 {
     public static class HashUtils
     {

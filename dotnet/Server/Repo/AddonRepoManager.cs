@@ -48,6 +48,8 @@ namespace BepInEx.ModManager.Server.Repo
 
         public string UrlCacheDir => Path.Combine(RootPath, ".url");
 
+        public IReadOnlyList<PluginInfo> RepoPluginSnapshot { get; private set; }
+
         public AddonRepoConfig Config { get; private set; }
 
         private AddonRepoManager()
@@ -97,7 +99,7 @@ namespace BepInEx.ModManager.Server.Repo
             {
                 return null;
             }
-            if (!BepInExAssemblyInfo.TryRead(file, out var pi))
+            if (!BepInExAssemblyInfo.TryRead(file, out BepInExAssemblyInfo pi, shallow: false))
             {
                 return null;
             }
@@ -138,14 +140,14 @@ namespace BepInEx.ModManager.Server.Repo
             }
         }
 
-        public async Task<IList<PluginInfo>> LoadLocalPluginsAsync()
+        public async Task<IReadOnlyList<PluginInfo>> LoadLocalPluginsAsync()
         {
             List<PluginInfo> plugins = new();
             foreach (string file in Directory.EnumerateFiles(PluginStoreRoot, "*.dll", SearchOption.AllDirectories))
             {
                 try
                 {
-                    if (BepInExAssemblyInfo.TryRead(file, out var meta))
+                    if (BepInExAssemblyInfo.TryRead(file, out BepInExAssemblyInfo meta, shallow: false))
                     {
                         plugins.Add(new()
                         {
@@ -153,6 +155,8 @@ namespace BepInEx.ModManager.Server.Repo
                             Id = meta.Id,
                             Name = meta.Name,
                             Version = meta.Version,
+                            Desc = meta.Description ?? string.Empty,
+                            Miscs = string.Join(",", meta.GameProcessName) ?? string.Empty,
                         });
                     }
                 }
@@ -161,6 +165,7 @@ namespace BepInEx.ModManager.Server.Repo
                     Logger.Error(e);
                 }
             }
+            RepoPluginSnapshot = plugins;
             return plugins;
         }
 

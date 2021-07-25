@@ -103,11 +103,15 @@ namespace BepInEx.ModManager.Server
                     Directory.CreateDirectory(destDir);
                 }
                 string destFile = Path.Combine(destDir, Path.GetFileName(pluginPath));
-                File.Copy(pluginPath, destFile, true);
-                Logger.Info($"Plugin installed: {Path.GetFileName(pluginPath)}");
-                if (BepInExAssemblyInfo.TryRead(destFile, out var info))
+                // Might be identical when installing missing dependencies
+                if (pluginPath != destFile)
                 {
-                    IList<PluginInfo> plugins = await ListPluginsAsync(gamePath).ConfigureAwait(false);
+                    File.Copy(pluginPath, destFile, true);
+                    Logger.Info($"Plugin installed: {Path.GetFileName(pluginPath)}");
+                }
+                if (BepInExAssemblyInfo.TryRead(pluginPath, out BepInExAssemblyInfo info, shallow: false))
+                {
+                    IReadOnlyList<PluginInfo> plugins = await ListPluginsAsync(gamePath).ConfigureAwait(false);
                     foreach (PluginInfo p in plugins.Where(x => x.Path != destFile && x.Id == info.Id))
                     {
                         File.Delete(p.Path);
@@ -115,10 +119,10 @@ namespace BepInEx.ModManager.Server
                     // References
                     if (info.References?.Count > 0)
                     {
-                        foreach (var reference in info.References)
+                        foreach (BepInExAssemblyReferenceInfo reference in info.References)
                         {
                             // Match version first
-                            var localRefFile = Path.Combine(destDir, AddonRepoManager.Instance.PluginStoreRoot, reference.Version, reference.Name, $"{reference.Name}.dll");
+                            string localRefFile = Path.Combine(destDir, AddonRepoManager.Instance.PluginStoreRoot, reference.Version, reference.Name, $"{reference.Name}.dll");
                             if (!File.Exists(localRefFile))
                             {
                                 localRefFile = Directory
@@ -128,13 +132,20 @@ namespace BepInEx.ModManager.Server
                             }
                             if (!string.IsNullOrEmpty(localRefFile) && File.Exists(localRefFile))
                             {
-                                foreach (var dup in Directory.EnumerateFiles(destDir, $"{reference.Name}.dll", SearchOption.AllDirectories))
+                                foreach (string dup in Directory.EnumerateFiles(destDir, $"{reference.Name}.dll", SearchOption.AllDirectories))
                                 {
-                                    File.Delete(dup);
-                                    Logger.Info($"Deleting duplicate reference: {Path.GetFileName(dup)}");
+                                    try
+                                    {
+                                        File.Delete(dup);
+                                        Logger.Info($"Deleting duplicate reference: {Path.GetFileName(dup)}");
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Logger.Error(e);
+                                    }
                                 }
 
-                                var destRefFile = Path.Combine(destDir, $"{reference.Name}.dll");
+                                string destRefFile = Path.Combine(destDir, $"{reference.Name}.dll");
                                 File.Copy(localRefFile, destRefFile, true);
                                 Logger.Info($"Dependency installed: {reference.Name}.dll");
                             }
@@ -162,14 +173,15 @@ namespace BepInEx.ModManager.Server
             return false;
         }
 
-        public static async Task<IList<PluginInfo>> ListPluginsAsync(string path)
+        public static async Task<IReadOnlyList<PluginInfo>> ListPluginsAsync(string path)
         {
             List<PluginInfo> plugins = new();
-            string plguinDir = Path.Combine(Path.Combine(path, "BepInEx", "plugins"));
+            string bieCoreDir = Path.Combine(Path.Combine(path, "BepInEx", "core"));
+            string pluginDir = Path.Combine(Path.Combine(path, "BepInEx", "plugins"));
             List<Task> tasks = new();
-            if (Directory.Exists(plguinDir))
+            if (Directory.Exists(pluginDir))
             {
-                foreach (string plugin in Directory.EnumerateFiles(plguinDir, "*.dll", SearchOption.AllDirectories))
+                foreach (string plugin in Directory.EnumerateFiles(pluginDir, "*.dll", SearchOption.AllDirectories))
                 {
                     PluginInfo pluginInfo = new()
                     {
@@ -183,11 +195,43 @@ namespace BepInEx.ModManager.Server
                     // Use a different way to extract assembly info instead, maybe ILSpy.
                     tasks.Add(Task.Run(async () =>
                     {
-                        if (BepInExAssemblyInfo.TryRead(plugin, out var dllInfo))
+                        if (BepInExAssemblyInfo.TryRead(plugin, out BepInExAssemblyInfo dllInfo, shallow: false))
                         {
                             pluginInfo.Id = dllInfo.Id;
                             pluginInfo.Name = dllInfo.Name;
                             pluginInfo.Version = dllInfo.Version;
+                            pluginInfo.Desc = dllInfo.Description ?? string.Empty;
+                            pluginInfo.Miscs = string.Join(",", dllInfo.GameProcessName) ?? string.Empty;
+
+                            // Check missing dependencies
+                            if (dllInfo.References?.Count > 0)
+                            {
+                                foreach (BepInExAssemblyReferenceInfo reference in dllInfo.References)
+                                {
+                                    string refFileName = $"{reference.Name}.dll";
+                                    if (!Directory.EnumerateFiles(pluginDir, refFileName, SearchOption.AllDirectories).Any()
+                                        && !Directory.EnumerateFiles(bieCoreDir, refFileName, SearchOption.AllDirectories).Any())
+                                    {
+                                        pluginInfo.MissingReference = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Check local updates
+                            IReadOnlyList<PluginInfo> repoPlugins = AddonRepoManager.Instance.RepoPluginSnapshot;
+                            if (repoPlugins?.Count > 0)
+                            {
+                                PluginInfo latest = repoPlugins
+                                    .Where(_ => _.Id == dllInfo.Id && _.Version.CompareTo(dllInfo.Version) > 0)
+                                    .OrderByDescending(_ => _.Version)
+                                    .FirstOrDefault();
+                                if (latest != null)
+                                {
+                                    pluginInfo.HasUpdate = true;
+                                    pluginInfo.UpgradePath = latest.Path;
+                                }
+                            }
                         }
                     }));
                 }

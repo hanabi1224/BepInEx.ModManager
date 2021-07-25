@@ -2,7 +2,7 @@
 using System.IO;
 using NLog;
 
-namespace BepInEx.ModManager.Server
+namespace BepInEx.ModManager.Shared
 {
     public class TempDir : DisposableBase
     {

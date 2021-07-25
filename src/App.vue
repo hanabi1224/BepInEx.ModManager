@@ -37,7 +37,7 @@
                 <a-collapse default-active-key="0">
                     <a-collapse-panel v-for="(g, i) in games" :key="i">
                         <game-title slot="header" :game="g"></game-title>
-                        <game-card :game="g" @refreshGames="refreshGames" @installPlugin="installPlugin"></game-card>
+                        <GameCard :game="g" @refreshGames="refreshGames" @installPlugin="installPlugin"></GameCard>
                     </a-collapse-panel>
                 </a-collapse>
                 <InstallPluginModal

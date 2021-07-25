@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BepInEx.ModManager.Server
+namespace BepInEx.ModManager.Shared
 {
     public interface IDisposableObservable : IDisposable
     {

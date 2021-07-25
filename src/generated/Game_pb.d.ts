@@ -107,6 +107,21 @@ export class PluginInfo extends jspb.Message {
   getPath(): string;
   setPath(value: string): PluginInfo;
 
+  getDesc(): string;
+  setDesc(value: string): PluginInfo;
+
+  getMissingreference(): boolean;
+  setMissingreference(value: boolean): PluginInfo;
+
+  getHasupdate(): boolean;
+  setHasupdate(value: boolean): PluginInfo;
+
+  getUpgradepath(): string;
+  setUpgradepath(value: string): PluginInfo;
+
+  getMiscs(): string;
+  setMiscs(value: string): PluginInfo;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PluginInfo.AsObject;
   static toObject(includeInstance: boolean, msg: PluginInfo): PluginInfo.AsObject;
@@ -121,6 +136,11 @@ export namespace PluginInfo {
     name: string,
     version: string,
     path: string,
+    desc: string,
+    missingreference: boolean,
+    hasupdate: boolean,
+    upgradepath: string,
+    miscs: string,
   }
 }
 
@@ -137,6 +157,12 @@ export class PatcherInfo extends jspb.Message {
   getPath(): string;
   setPath(value: string): PatcherInfo;
 
+  getDesc(): string;
+  setDesc(value: string): PatcherInfo;
+
+  getMiscs(): string;
+  setMiscs(value: string): PatcherInfo;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PatcherInfo.AsObject;
   static toObject(includeInstance: boolean, msg: PatcherInfo): PatcherInfo.AsObject;
@@ -151,6 +177,8 @@ export namespace PatcherInfo {
     name: string,
     version: string,
     path: string,
+    desc: string,
+    miscs: string,
   }
 }
 

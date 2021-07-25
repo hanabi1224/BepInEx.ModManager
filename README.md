@@ -16,7 +16,8 @@ windows
 - Automatically detect and list steam unity games
 - Manually add non-steam unity games
 - Install / Uninstall BepInEx for a game with automatic detection of 32bit / 64bit
-- Install / Uninstall plugins for a game
+- Install / Uninstall / plugins for a game with dependencies auto-installed
+- Notify when plugin has updates or missing dependencies
 - Plugin repository / github release page support
 - Automatically detect and download plugin updates
 - Automatical self update via electron-updater
@@ -26,8 +27,6 @@ windows
 Download and install from the [release](https://github.com/hanabi1224/BepInEx.ModManager/releases/latest) page for the first time.
 
 The tool will update itself automatically once installed.
-
-Install [.Net Framework 4.6.2 runtime](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net462-web-installer) if it's missing
 
 ## Development
 

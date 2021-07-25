@@ -48,7 +48,7 @@ namespace BepInEx.ModManager.Shared
 
         public List<BepInExAssemblyReferenceInfo> References { get; set; } = new List<BepInExAssemblyReferenceInfo>();
 
-        public static bool TryRead(string path, out BepInExAssemblyInfo pluginInfo)
+        public static bool TryRead(string path, out BepInExAssemblyInfo pluginInfo, bool shallow)
         {
             if (!File.Exists(path))
             {
@@ -56,9 +56,18 @@ namespace BepInEx.ModManager.Shared
                 return false;
             }
 
+            TempDir tempDir = null;
             pluginInfo = new();
             try
             {
+                if (shallow)
+                {
+                    tempDir = new TempDir();
+                    string newPath = Path.Combine(tempDir.Dir, Path.GetFileName(path));
+                    File.Copy(path, newPath, true);
+                    path = newPath;
+                }
+
                 using AssemblyDefinition assemblyDefinition = AssemblyDefinition.ReadAssembly(path);
                 AssemblyDefinition assembly = assemblyDefinition.MainModule.Assembly;
                 Match match = Regex.Match(assembly.FullName, @"Version=(?<version>.+?),", RegexOptions.Compiled);
@@ -149,6 +158,13 @@ namespace BepInEx.ModManager.Shared
             {
                 Console.Error.WriteLine(e);
                 return false;
+            }
+            finally
+            {
+                if (tempDir != null)
+                {
+                    using (tempDir) { }
+                }
             }
         }
     }

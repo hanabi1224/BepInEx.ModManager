@@ -72,7 +72,7 @@ namespace BepInEx.ModManager.Server.Services
         public override async Task<ListPluginsResponse> ListPlugins(ListPluginsRequest request, ServerCallContext context)
         {
             ListPluginsResponse response = new();
-            IList<PluginInfo> localPlugins = await AddonRepoManager.Instance.LoadLocalPluginsAsync().ConfigureAwait(false);
+            IReadOnlyList<PluginInfo> localPlugins = await AddonRepoManager.Instance.LoadLocalPluginsAsync().ConfigureAwait(false);
             foreach (PluginInfo p in localPlugins)
             {
                 response.Plugins.Add(p);
@@ -169,7 +169,7 @@ namespace BepInEx.ModManager.Server.Services
             }
         }
 
-        public static async Task<IList<GameInfo>> GetGamesAsync()
+        public static async Task<IReadOnlyList<GameInfo>> GetGamesAsync()
         {
             List<GameInfo> games = new();
             List<Task<GameInfo>> tasks = new();
@@ -255,7 +255,6 @@ namespace BepInEx.ModManager.Server.Services
 
         private static async Task<GameInfo> ReadGameInfoAsync(string id, string name, string path)
         {
-
             if (string.IsNullOrEmpty(name))
             {
                 name = Path.GetFileName(path);
@@ -275,7 +274,8 @@ namespace BepInEx.ModManager.Server.Services
                 IsBIEInstalled = File.Exists(bieCoreLibPath),
                 IsBIEInitialized = File.Exists(Path.Combine(path, "BepInEx", "config", "BepInEx.cfg")),
             };
-            if (gameInfo.IsBIEInstalled && BepInExAssemblyInfo.TryRead(bieCoreLibPath, out var meta))
+            if (gameInfo.IsBIEInstalled
+                && BepInExAssemblyInfo.TryRead(bieCoreLibPath, out BepInExAssemblyInfo meta, shallow: false))
             {
                 gameInfo.BIEVersion = meta.Version;
             }

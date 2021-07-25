@@ -918,7 +918,12 @@ proto.BepInEx.PluginInfo.toObject = function(includeInstance, msg) {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     version: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    path: jspb.Message.getFieldWithDefault(msg, 4, "")
+    path: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    desc: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    missingreference: jspb.Message.getBooleanFieldWithDefault(msg, 11, false),
+    hasupdate: jspb.Message.getBooleanFieldWithDefault(msg, 12, false),
+    upgradepath: jspb.Message.getFieldWithDefault(msg, 13, ""),
+    miscs: jspb.Message.getFieldWithDefault(msg, 100, "")
   };
 
   if (includeInstance) {
@@ -970,6 +975,26 @@ proto.BepInEx.PluginInfo.deserializeBinaryFromReader = function(msg, reader) {
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setPath(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDesc(value);
+      break;
+    case 11:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setMissingreference(value);
+      break;
+    case 12:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setHasupdate(value);
+      break;
+    case 13:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUpgradepath(value);
+      break;
+    case 100:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setMiscs(value);
       break;
     default:
       reader.skipField();
@@ -1025,6 +1050,41 @@ proto.BepInEx.PluginInfo.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       4,
+      f
+    );
+  }
+  f = message.getDesc();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
+  f = message.getMissingreference();
+  if (f) {
+    writer.writeBool(
+      11,
+      f
+    );
+  }
+  f = message.getHasupdate();
+  if (f) {
+    writer.writeBool(
+      12,
+      f
+    );
+  }
+  f = message.getUpgradepath();
+  if (f.length > 0) {
+    writer.writeString(
+      13,
+      f
+    );
+  }
+  f = message.getMiscs();
+  if (f.length > 0) {
+    writer.writeString(
+      100,
       f
     );
   }
@@ -1103,6 +1163,96 @@ proto.BepInEx.PluginInfo.prototype.setPath = function(value) {
 };
 
 
+/**
+ * optional string desc = 5;
+ * @return {string}
+ */
+proto.BepInEx.PluginInfo.prototype.getDesc = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.BepInEx.PluginInfo} returns this
+ */
+proto.BepInEx.PluginInfo.prototype.setDesc = function(value) {
+  return jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional bool missingReference = 11;
+ * @return {boolean}
+ */
+proto.BepInEx.PluginInfo.prototype.getMissingreference = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 11, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.BepInEx.PluginInfo} returns this
+ */
+proto.BepInEx.PluginInfo.prototype.setMissingreference = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 11, value);
+};
+
+
+/**
+ * optional bool hasUpdate = 12;
+ * @return {boolean}
+ */
+proto.BepInEx.PluginInfo.prototype.getHasupdate = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 12, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.BepInEx.PluginInfo} returns this
+ */
+proto.BepInEx.PluginInfo.prototype.setHasupdate = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 12, value);
+};
+
+
+/**
+ * optional string upgradePath = 13;
+ * @return {string}
+ */
+proto.BepInEx.PluginInfo.prototype.getUpgradepath = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.BepInEx.PluginInfo} returns this
+ */
+proto.BepInEx.PluginInfo.prototype.setUpgradepath = function(value) {
+  return jspb.Message.setProto3StringField(this, 13, value);
+};
+
+
+/**
+ * optional string miscs = 100;
+ * @return {string}
+ */
+proto.BepInEx.PluginInfo.prototype.getMiscs = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 100, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.BepInEx.PluginInfo} returns this
+ */
+proto.BepInEx.PluginInfo.prototype.setMiscs = function(value) {
+  return jspb.Message.setProto3StringField(this, 100, value);
+};
+
+
 
 
 
@@ -1138,7 +1288,9 @@ proto.BepInEx.PatcherInfo.toObject = function(includeInstance, msg) {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     version: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    path: jspb.Message.getFieldWithDefault(msg, 4, "")
+    path: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    desc: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    miscs: jspb.Message.getFieldWithDefault(msg, 100, "")
   };
 
   if (includeInstance) {
@@ -1190,6 +1342,14 @@ proto.BepInEx.PatcherInfo.deserializeBinaryFromReader = function(msg, reader) {
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setPath(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDesc(value);
+      break;
+    case 100:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setMiscs(value);
       break;
     default:
       reader.skipField();
@@ -1245,6 +1405,20 @@ proto.BepInEx.PatcherInfo.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       4,
+      f
+    );
+  }
+  f = message.getDesc();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
+  f = message.getMiscs();
+  if (f.length > 0) {
+    writer.writeString(
+      100,
       f
     );
   }
@@ -1320,6 +1494,42 @@ proto.BepInEx.PatcherInfo.prototype.getPath = function() {
  */
 proto.BepInEx.PatcherInfo.prototype.setPath = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional string desc = 5;
+ * @return {string}
+ */
+proto.BepInEx.PatcherInfo.prototype.getDesc = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.BepInEx.PatcherInfo} returns this
+ */
+proto.BepInEx.PatcherInfo.prototype.setDesc = function(value) {
+  return jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional string miscs = 100;
+ * @return {string}
+ */
+proto.BepInEx.PatcherInfo.prototype.getMiscs = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 100, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.BepInEx.PatcherInfo} returns this
+ */
+proto.BepInEx.PatcherInfo.prototype.setMiscs = function(value) {
+  return jspb.Message.setProto3StringField(this, 100, value);
 };
 
 

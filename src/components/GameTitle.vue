@@ -1,15 +1,10 @@
 <template>
-  <div>
-    <a-avatar
-      v-if="game.getIcon()"
-      :src="game.getIcon()"
-    ></a-avatar>
-    {{ game.getName() }} ({{ game.getIs64bit() ? '64bit' : '32bit' }}) - BIE
-    <a-icon
-      :type="bieStatusIcon"
-      :style="bieStatusIconStyle"
-    ></a-icon>
-  </div>
+    <div>
+        <a-avatar v-if="game.getIcon()" :src="game.getIcon()"></a-avatar>
+        {{ game.getName() }} ({{ game.getIs64bit() ? '64bit' : '32bit' }}) - BIE
+        <a-icon :type="bieStatusIcon" :style="bieStatusIconStyle"></a-icon>
+        <span v-if="game.getBieversion()">{{ game.getBieversion() }}</span>
+    </div>
 </template>
 
 <script lang="ts">
@@ -24,18 +19,18 @@ export default class GameTitle extends Vue {
     @Prop()
     game!: GameInfo;
 
-    get bieStatusIcon(){
-      return this.game.getIsbieinstalled() ? 'check' : 'close';
+    get bieStatusIcon() {
+        return this.game.getIsbieinstalled() ? 'check' : 'close';
     }
 
-    get bieStatusIconStyle(){
-      if(!this.game.getIsbieinstalled()){
-        return 'color:red';
-      } 
-      if (this.game.getIsbieinitialized()){
-        return 'color:green';
-      }
-      return 'color:orange';
+    get bieStatusIconStyle() {
+        if (!this.game.getIsbieinstalled()) {
+            return 'color:red';
+        }
+        if (this.game.getIsbieinitialized()) {
+            return 'color:green';
+        }
+        return 'color:orange';
     }
 }
 </script>

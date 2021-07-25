@@ -37,6 +37,8 @@
                             <a-list-item-meta :description="item.getName()">
                                 <span slot="title">{{ item.getId() }}(v{{ item.getVersion() }})</span>
                             </a-list-item-meta>
+                            <p v-if="item.getDesc()">{{ item.getDesc() }}</p>
+                            <p v-if="item.getMiscs()">{{ item.getMiscs() }}</p>
                             <p>{{ item.getPath() }}</p>
                             Actions:
                             <a-popconfirm
@@ -105,7 +107,9 @@ export default class InstallPluginModal extends Vue {
                     const loweredFilterText = this.filterText.toLowerCase();
                     if (
                         p.getId().toLowerCase().indexOf(loweredFilterText) < 0 &&
-                        p.getName().toLowerCase().indexOf(loweredFilterText)
+                        p.getName().toLowerCase().indexOf(loweredFilterText) < 0 &&
+                        p.getDesc().toLowerCase().indexOf(loweredFilterText) < 0 &&
+                        p.getMiscs().toLowerCase().indexOf(loweredFilterText) < 0
                     ) {
                         return false;
                     }

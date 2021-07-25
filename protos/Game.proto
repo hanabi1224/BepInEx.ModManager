@@ -27,6 +27,11 @@ message PluginInfo {
     string name = 2;
     string version = 3;
     string path = 4;
+    string desc = 5;
+    bool missingReference = 11;
+    bool hasUpdate = 12;
+    string upgradePath = 13;
+    string miscs = 100;
 }
 
 message PatcherInfo {
@@ -34,6 +39,8 @@ message PatcherInfo {
     string name = 2;
     string version = 3;
     string path = 4;
+    string desc = 5;
+    string miscs = 100;
 }
 
 message InstallBIERequest {
