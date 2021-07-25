@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BepInEx.ModManager.Server.Repo;
 using BepInEx.ModManager.Shared;
 using HtmlAgilityPack;
 using NLog;
@@ -103,11 +104,42 @@ namespace BepInEx.ModManager.Server
                 }
                 string destFile = Path.Combine(destDir, Path.GetFileName(pluginPath));
                 File.Copy(pluginPath, destFile, true);
-                BepInExAssemblyInfo info = await FileTool.ReadDllInfoAsync(destFile).ConfigureAwait(false);
-                IList<PluginInfo> plugins = await ListPluginsAsync(gamePath).ConfigureAwait(false);
-                foreach (PluginInfo p in plugins.Where(x => x.Path != destFile && x.Id == info.Id))
+                Logger.Info($"Plugin installed: {Path.GetFileName(pluginPath)}");
+                if (BepInExAssemblyInfo.TryRead(destFile, out var info))
                 {
-                    File.Delete(p.Path);
+                    IList<PluginInfo> plugins = await ListPluginsAsync(gamePath).ConfigureAwait(false);
+                    foreach (PluginInfo p in plugins.Where(x => x.Path != destFile && x.Id == info.Id))
+                    {
+                        File.Delete(p.Path);
+                    }
+                    // References
+                    if (info.References?.Count > 0)
+                    {
+                        foreach (var reference in info.References)
+                        {
+                            // Match version first
+                            var localRefFile = Path.Combine(destDir, AddonRepoManager.Instance.PluginStoreRoot, reference.Version, reference.Name, $"{reference.Name}.dll");
+                            if (!File.Exists(localRefFile))
+                            {
+                                localRefFile = Directory
+                                    .EnumerateFiles(AddonRepoManager.Instance.PluginStoreRoot, $"{reference.Name}.dll", SearchOption.AllDirectories)
+                                    .OrderByDescending(_ => _) // Latest version
+                                    .FirstOrDefault();
+                            }
+                            if (!string.IsNullOrEmpty(localRefFile) && File.Exists(localRefFile))
+                            {
+                                foreach (var dup in Directory.EnumerateFiles(destDir, $"{reference.Name}.dll", SearchOption.AllDirectories))
+                                {
+                                    File.Delete(dup);
+                                    Logger.Info($"Deleting duplicate reference: {Path.GetFileName(dup)}");
+                                }
+
+                                var destRefFile = Path.Combine(destDir, $"{reference.Name}.dll");
+                                File.Copy(localRefFile, destRefFile, true);
+                                Logger.Info($"Dependency installed: {reference.Name}.dll");
+                            }
+                        }
+                    }
                 }
             }
             return true;
@@ -151,8 +183,7 @@ namespace BepInEx.ModManager.Server
                     // Use a different way to extract assembly info instead, maybe ILSpy.
                     tasks.Add(Task.Run(async () =>
                     {
-                        BepInExAssemblyInfo dllInfo = await FileTool.ReadDllInfoAsync(plugin).ConfigureAwait(false);
-                        if (!string.IsNullOrEmpty(dllInfo?.Id))
+                        if (BepInExAssemblyInfo.TryRead(plugin, out var dllInfo))
                         {
                             pluginInfo.Id = dllInfo.Id;
                             pluginInfo.Name = dllInfo.Name;

@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net5</TargetFramework>
     <OutputType>Exe</OutputType>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DotNet.Glob" Version="3.1.2" />
@@ -39,20 +40,8 @@
       <Visible>true</Visible>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
-    <None Include="../DllReader/bin/Release/net462/publish/**/*">
-      <Link>dllreader/%(RecursiveDir)%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Visible>true</Visible>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shared\BepInEx.ModManager.Shared.csproj" />
-    <ProjectReference Include="..\DllReader\BepInEx.ModManager.DllReader.csproj" Condition="$(Configuration)=='Release'">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>    
+    <ProjectReference Include="..\Shared\BepInEx.ModManager.Shared.csproj" />  
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="dotnet publish -v m -c Release $(ProjectDir)../DllReader" />
-  </Target>
 </Project>

@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using BepInEx.ModManager.Server.Repo;
+using BepInEx.ModManager.Shared;
 using Grpc.Core;
 using Microsoft.Win32;
 using NLog;
@@ -274,9 +275,9 @@ namespace BepInEx.ModManager.Server.Services
                 IsBIEInstalled = File.Exists(bieCoreLibPath),
                 IsBIEInitialized = File.Exists(Path.Combine(path, "BepInEx", "config", "BepInEx.cfg")),
             };
-            if (gameInfo.IsBIEInstalled)
+            if (gameInfo.IsBIEInstalled && BepInExAssemblyInfo.TryRead(bieCoreLibPath, out var meta))
             {
-                gameInfo.BIEVersion = (await FileTool.ReadDllInfoAsync(bieCoreLibPath, versionOnly: true).ConfigureAwait(false))?.Version ?? string.Empty;
+                gameInfo.BIEVersion = meta.Version;
             }
 
             foreach (string exe in Directory.EnumerateFiles(path, "*.exe", SearchOption.TopDirectoryOnly))

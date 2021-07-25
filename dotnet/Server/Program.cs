@@ -1,8 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using BepInEx.ModManager.Server.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -41,8 +37,8 @@ namespace BepInEx.ModManager.Server
             }
             else // CLI mode
             {
-                await ModManagerServiceImpl.GetGamesAsync().ConfigureAwait(false);
-                //await Repo.AddonRepoManager.Instance.UpdateBucketsAsync().ConfigureAwait(false);
+                //await ModManagerServiceImpl.GetGamesAsync().ConfigureAwait(false);
+                await Repo.AddonRepoManager.Instance.UpdateBucketsAsync().ConfigureAwait(false);
             }
         }
 

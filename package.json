@@ -29,10 +29,11 @@
     "afterPack": "./customAfterPackHook.js"
   },
   "scripts": {
-    "dist": "yarn clean && yarn build && electron-builder --publish onTag",
-    "server": "dotnet publish dotnet/Server -c Release -v m --self-contained -r win-x64 /p:PublishSingleFile=true -o out/server",
-    "build": "parcel build src/main.ts src/*.html -t electron -d out --public-url . --no-source-maps && yarn server",
-    "start": "yarn build && electron out/main.js",
+    "dist": "yarn clean && yarn build && yarn server:prod && electron-builder --publish onTag",
+    "server:prod": "dotnet publish dotnet/Server -c Release -v m --self-contained -r win-x64 /p:PublishSingleFile=true -o out/server",
+    "server:dev": "dotnet publish dotnet/Server -c Debug -v m --self-contained -r win-x64 -o out/server",
+    "build": "parcel build src/main.ts src/*.html -t electron -d out --public-url . --no-source-maps",
+    "start": "yarn build && yarn server:dev && electron out/main.js",
     "watch": "parcel watch src/main.ts src/*.html -t electron -d out --public-url .",
     "clean": "rimraf out",
     "protogen": "tsc protogen.ts && node protogen.js",

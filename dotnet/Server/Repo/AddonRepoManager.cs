@@ -97,8 +97,7 @@ namespace BepInEx.ModManager.Server.Repo
             {
                 return null;
             }
-            BepInExAssemblyInfo pi = await FileTool.ReadDllInfoAsync(file).ConfigureAwait(false);
-            if (pi == null)
+            if (!BepInExAssemblyInfo.TryRead(file, out var pi))
             {
                 return null;
             }
@@ -111,15 +110,14 @@ namespace BepInEx.ModManager.Server.Repo
             {
             }
 
-            string destDir = Path.Combine(PluginStoreRoot, Path.GetFileNameWithoutExtension(file));
-            string destFile = Path.Combine(destDir, $"{Path.GetFileNameWithoutExtension(file)}.{pi.Version}.dll");
+            string destDir = Path.Combine(PluginStoreRoot, Path.GetFileNameWithoutExtension(file), pi.Version);
+            string destFile = Path.Combine(destDir, Path.GetFileName(file));
             if (!Directory.Exists(destDir))
             {
                 Directory.CreateDirectory(destDir);
             }
             Logger.Info($"Saving plugin {pi.Name} - {pi.Version}");
             File.Copy(file, destFile, overwrite: true);
-            File.WriteAllText($"{destFile}.json", JsonConvert.SerializeObject(pi));
             return pi;
         }
 
@@ -147,33 +145,15 @@ namespace BepInEx.ModManager.Server.Repo
             {
                 try
                 {
-                    string jsonPath = $"{file}.json";
-                    if (File.Exists(jsonPath))
+                    if (BepInExAssemblyInfo.TryRead(file, out var meta))
                     {
-                        BepInExAssemblyInfo meta = null;
-                        try
+                        plugins.Add(new()
                         {
-                            JsonConvert.DeserializeObject<BepInExAssemblyInfo>(File.ReadAllText(jsonPath));
-                        }
-                        catch { }
-                        if (string.IsNullOrEmpty(meta?.Id))
-                        {
-                            meta = await FileTool.ReadDllInfoAsync(file).ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(meta?.Id))
-                            {
-                                File.WriteAllText(jsonPath, JsonConvert.SerializeObject(meta));
-                            }
-                        }
-                        if (!string.IsNullOrEmpty(meta?.Id))
-                        {
-                            plugins.Add(new()
-                            {
-                                Path = file,
-                                Id = meta.Id,
-                                Name = meta.Name,
-                                Version = meta.Version,
-                            });
-                        }
+                            Path = file,
+                            Id = meta.Id,
+                            Name = meta.Name,
+                            Version = meta.Version,
+                        });
                     }
                 }
                 catch (Exception e)
@@ -229,7 +209,7 @@ namespace BepInEx.ModManager.Server.Repo
             {
                 try
                 {
-                    isUrlCacheFileExpired = new FileInfo(urlCacheFilePath).LastWriteTimeUtc.AddDays(1) < DateTimeOffset.UtcNow.UtcDateTime;
+                    isUrlCacheFileExpired = new FileInfo(urlCacheFilePath).LastWriteTimeUtc.AddHours(6) < DateTimeOffset.UtcNow.UtcDateTime;
                     urlCache = JsonConvert.DeserializeObject<UrlChangeDetectionHeaders>(File.ReadAllText(urlCacheFilePath));
                 }
                 catch (Exception e)
