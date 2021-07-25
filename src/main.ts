@@ -1,8 +1,24 @@
-import { app, BrowserWindow, Menu } from 'electron';
+import { app, BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions, shell } from 'electron';
 import logger from 'electron-log';
 import { autoUpdater } from "electron-updater";
 import path from 'path';
 import { spawn } from "child_process";
+import osLocale from 'os-locale';
+import i18next from 'i18next';
+import en from './i18n/en';
+import zh from './i18n/zh';
+
+i18next.init({
+   supportedLngs: ['en', 'zh'],
+   resources: {
+      zh: {
+         translation: zh
+      },
+      en: {
+         translation: en
+      }
+   }
+})
 
 app.setAppUserModelId("BepInEx.ModManager");
 app.setAsDefaultProtocolClient('biemm');
@@ -10,7 +26,6 @@ app.setAsDefaultProtocolClient('biemm');
 const serverPort = 40003;
 const cwd = process.cwd();
 logger.info(cwd);
-logger.info(__dirname);
 const serverExe = path.join(cwd, 'out', 'server', 'BepInEx.ModManager.Server.exe')
 const server = spawn(serverExe, `--server true --port ${serverPort}`.split(' '))
 server.stdout.on("data", function (data) {
@@ -24,17 +39,51 @@ autoUpdater.logger = logger;
 autoUpdater.logger.transports.file.level = 'info';
 logger.info('App starting...');
 
-const template = []
 let win: BrowserWindow
+
+function changeLang(lang: 'en' | 'zh') {
+   if (i18next.language != lang) {
+      i18next.changeLanguage(lang)
+      win?.webContents.send('set-lang', lang)
+      drawMenuBar()
+   }
+}
+
+function drawMenuBar() {
+   const lang = i18next.language
+   const menu = Menu.buildFromTemplate([
+      {
+         label: i18next.t("Operations"),
+         submenu: [
+            { role: 'toggleDevTools', label: i18next.t('Developer Tool') },
+            { role: 'quit', label: i18next.t('Exit') },
+         ],
+      },
+      {
+         label: i18next.t('Language Setting'),
+         submenu: [
+            { label: 'English', type: "checkbox", checked: lang == 'en', click: () => changeLang('en') },
+            { type: 'separator' },
+            { label: '简体中文', type: "checkbox", checked: lang == 'zh', click: () => changeLang('zh') },
+         ]
+      }, {
+         label: i18next.t('About'),
+         submenu: [
+            { label: i18next.t('Check For Update'), click: () => shell.openPath('https://github.com/hanabi1224/BepInEx.ModManager/releases/latest') },
+            { label: 'Github', click: () => shell.openPath('https://github.com/hanabi1224/BepInEx.ModManager'), }
+         ]
+      }
+   ]);
+   Menu.setApplicationMenu(menu);
+}
 
 function sendStatusToWindow(text) {
    logger.info(text);
-   win.webContents.send('message', text);
 }
 
 function createWindow() {
    win = new BrowserWindow({
-      autoHideMenuBar: true,
+      // autoHideMenuBar: true,
       fullscreenable: false,
       frame: true,
       webPreferences: {
@@ -50,9 +99,11 @@ app.on('window-all-closed', () => {
    app.quit();
 });
 
-app.on('ready', function () {
-   // const menu = Menu.buildFromTemplate(template);
-   // Menu.setApplicationMenu(menu);
+app.on('ready', async function () {
+   const locale = await osLocale();
+   // const locale = app.getLocale();
+   console.log(`locale: ${locale}`);
+   changeLang(locale.split('-')[0]);
    createWindow();
 });
 
@@ -61,6 +112,7 @@ autoUpdater.on('checking-for-update', () => {
 })
 autoUpdater.on('update-available', (info) => {
    sendStatusToWindow('Update available.');
+   win.webContents.send('update-available', info);
 })
 autoUpdater.on('update-not-available', (info) => {
    sendStatusToWindow('Update not available.');
@@ -76,6 +128,7 @@ autoUpdater.on('download-progress', (progressObj) => {
 })
 autoUpdater.on('update-downloaded', (info) => {
    sendStatusToWindow('Update downloaded');
+   win.webContents.send('update-downloaded', info);
 });
 
 app.on('ready', async () => {

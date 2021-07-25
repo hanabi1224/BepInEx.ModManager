@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BepInEx.ModManager.Server.Services;
 using BepInEx.ModManager.Shared;
 using DotNet.Globbing;
 using HtmlAgilityPack;
@@ -184,6 +185,24 @@ namespace BepInEx.ModManager.Server.Repo
                 {
                     tasks.Add(UpdateBucketInnerAsync(b, visited));
                 }
+
+                if (ModManagerServiceImpl.GameSnapshot?.Count > 0)
+                {
+                    foreach (string id in ModManagerServiceImpl
+                        .GameSnapshot
+                        .Where(_ => !string.IsNullOrEmpty(_.Id))
+                        .Select(_ => _.Id)
+                        .Distinct())
+                    {
+                        // Make this configurable
+                        string url = $"https://bie-mod-repo.vercel.app/{id}.json";
+                        tasks.Add(UpdateBucketInnerAsync(new()
+                        {
+                            Url = url,
+                        }, visited));
+                    }
+                }
+
                 await Task.WhenAll(tasks).ConfigureAwait(false);
             }
             finally
@@ -290,7 +309,7 @@ namespace BepInEx.ModManager.Server.Repo
                 }
                 catch { }
                 // yaml
-                if (innerBuckets == null)
+                if (innerBuckets?.Count == 0)
                 {
                     try
                     {
@@ -298,8 +317,14 @@ namespace BepInEx.ModManager.Server.Repo
                     }
                     catch { }
                 }
-                if (innerBuckets != null)
+                if (innerBuckets?.Count > 0)
                 {
+                    // Make urls absolute
+                    foreach (AddonRepoBucketConfig ib in innerBuckets)
+                    {
+                        ib.Url = UrlUtils.GetAbsolutionUrl(url: ib.Url, referer: bucket.Url);
+                    }
+
                     Task[] tasks = innerBuckets.Distinct(AddonRepoBucketConfig.EqualityComparer.Instance).Select(b => UpdateBucketInnerAsync(b, visited)).ToArray();
                     await Task.WhenAll(tasks).ConfigureAwait(false);
                     return true;
@@ -336,7 +361,7 @@ namespace BepInEx.ModManager.Server.Repo
                                     {
                                         Path = url
                                     }.ToString();
-                                    innerBucketConfigs.Add(new() { Url = absUrl });
+                                    innerBucketConfigs.Add(new() { Url = UrlUtils.GetAbsolutionUrl(url: url, referer: bucket.Url) });
                                 }
                                 Task[] tasks = innerBucketConfigs.Distinct(AddonRepoBucketConfig.EqualityComparer.Instance).Select(b => UpdateBucketInnerAsync(b, visited)).ToArray();
                                 await Task.WhenAll(tasks).ConfigureAwait(false);

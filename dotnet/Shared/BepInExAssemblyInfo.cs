@@ -23,6 +23,7 @@ namespace BepInEx.ModManager.Shared
             @"System(\..+)?",
             @"UnityEngine(\..+)?",
             @"Assembly-CSharp(\..+)?",
+            @"0Harmony(\d+)?",
         };
         private static IReadOnlyList<Regex> s_precludeDependencyRegexList { get; } = s_precludeDependencyPatterns.Select(p => new Regex(p, RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToList();
         private static readonly ISet<string> s_precludeDependencies = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -31,7 +32,6 @@ namespace BepInEx.ModManager.Shared
             "BepInEx.BepIn4Patcher",
             "BepInEx",
             "Newtonsoft.Json",
-            "0Harmony",
         };
 
         public BepInExAssemblyType Type { get; set; }

@@ -1,7 +1,7 @@
 <template>
     <div>
         <a-modal
-            title="Config Editor"
+            :title="i18n('Config Editor')"
             :visible="visible"
             :cancel-text="i18n('Close')"
             :ok-text="i18n('Save')"
@@ -94,6 +94,12 @@ export default class ConfigEditorModal extends Vue {
                 this.editor.setValue(response.getContent());
             });
         }
+    }
+
+    created() {
+        i18next.on('languageChanged', (lng) => {
+            this.$forceUpdate();
+        });
     }
 }
 </script>

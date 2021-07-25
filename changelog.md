@@ -1,6 +1,7 @@
-## Dev
+## 0.1.3
 
-- TODO
+- i18n
+- Add default mod Repo for steam games
 
 ## 0.1.2
 

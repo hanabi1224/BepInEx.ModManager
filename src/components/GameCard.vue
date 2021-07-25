@@ -2,7 +2,7 @@
     <div>
         <a-spin size="large" :spinning="pending">
             <p>
-                <a-button type="primary" size="small" @click="openPath()"> Open Game Folder </a-button>
+                <a-button type="primary" size="small" @click="openPath()"> {{'Open Game Folder'|i18n}} </a-button>
                 <a-popconfirm
                     v-if="!game.getIsbieinstalled()"
                     :title="confirmInstallBIEMessage"
@@ -10,7 +10,7 @@
                     cancel-text="No"
                     @confirm="installBIE"
                 >
-                    <a-button type="primary" size="small"> Install BIE </a-button> </a-popconfirm
+                    <a-button type="primary" size="small"> {{'Install BIE'|i18n}} </a-button> </a-popconfirm
                 ><a-popconfirm
                     v-if="game.getIsbieinstalled()"
                     :title="confirmUninstallBIEMessage"
@@ -18,11 +18,12 @@
                     cancel-text="No"
                     @confirm="uninstallBIE"
                 >
-                    <a-button type="danger" size="small"> Uninstall BIE </a-button>
+                    <a-button type="danger" size="small"> {{'Uninstall BIE'|i18n}} </a-button>
                 </a-popconfirm>
                 <a-button v-if="game.getIsbieinstalled()" type="primary" size="small" @click="openInstallPluginModal">
-                    Install a plugin
+                    {{'Install Mods'|i18n}}
                 </a-button>
+                <p v-if="game.getId()">{{'Game Id'|i18n}}: {{ game.getId() }}</p>
                 <!-- BIE installed: {{ g.getIsbieinstalled() }},
                 initialized {{ g.getIsbieinitialized() }} -->
             </p>
@@ -44,20 +45,20 @@
                             Actions:
                             <a-popconfirm
                                 v-if="game.getIsbieinstalled()"
-                                title="Are you sure?"
-                                ok-text="Yes"
-                                cancel-text="No"
+                                :title="i18n('Are you sure?')"
+                                :ok-text="i18n('Yes')"
+                                :cancel-text="i18n('No')"
                                 @confirm="uninstallPlugin(item)"
                             >
-                                <a-button type="danger" size="small"> Uninstall </a-button> </a-popconfirm
+                                <a-button type="danger" size="small"> {{'Uninstall'|i18n}} </a-button> </a-popconfirm
                             ><a-popconfirm
                                 v-if="item.getHasupdate()"
-                                title="Are you sure?"
-                                ok-text="Yes"
-                                cancel-text="No"
+                                :title="i18n('Are you sure?')"
+                                :ok-text="i18n('Yes')"
+                                :cancel-text="i18n('No')"
                                 @confirm="installPlugin(item.getUpgradepath())"
                             >
-                                <a-button type="primary" size="small"> Upgrade </a-button></a-popconfirm
+                                <a-button type="primary" size="small"> {{'Upgrade'|i18n}} </a-button></a-popconfirm
                             >
                             <a-popconfirm
                                 v-if="item.getMissingreference()"
@@ -67,7 +68,7 @@
                                 @confirm="installPlugin(item.getPath())"
                             >
                                 <a-button type="danger" size="small">
-                                    Install missing dependencies
+                                    {{'Install Missing Dependencies'|i18n}}
                                 </a-button></a-popconfirm
                             >
                         </a-list-item>
@@ -165,6 +166,16 @@ export default class GameCard extends Vue {
 
     todo() {
         this.$message.warning(`Not implemented yet!`);
+    }
+
+    i18n(text) {
+        i18next.t(text);
+    }
+
+    created() {
+        i18next.on('languageChanged', (lng) => {
+            this.$forceUpdate();
+        });
     }
 }
 </script>

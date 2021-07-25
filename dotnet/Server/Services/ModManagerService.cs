@@ -21,6 +21,8 @@ namespace BepInEx.ModManager.Server.Services
     {
         private static Logger Logger { get; } = LogManager.GetCurrentClassLogger();
 
+        public static IReadOnlyList<GameInfo> GameSnapshot { get; private set; }
+
         public override async Task LongConnect(
             LongConnectRequest request,
             IServerStreamWriter<LongConnectResponse> responseStream,
@@ -177,7 +179,7 @@ namespace BepInEx.ModManager.Server.Services
             {
                 foreach (AddonRepoGameConfig g in AddonRepoManager.Instance.Config.Games)
                 {
-                    tasks.Add(ReadGameInfoAsync(id: g.Name, name: g.Name, path: g.Path));
+                    tasks.Add(ReadGameInfoAsync(id: string.Empty, name: g.Name, path: g.Path));
                 }
             }
 
@@ -224,6 +226,8 @@ namespace BepInEx.ModManager.Server.Services
                     Logger.Error(e);
                 }
             }
+
+            GameSnapshot = games;
             return games;
         }
 
@@ -249,7 +253,8 @@ namespace BepInEx.ModManager.Server.Services
                     return null;
                 }
             }
-            string id = Regex.Match(subKey, @"\d+", RegexOptions.Compiled).Value;
+            Match idMatch = Regex.Match(subKey, @"\d+", RegexOptions.Compiled);
+            string id = idMatch.Success ? idMatch.Value : string.Empty;
             return ReadGameInfoAsync(id: id, name: name, path: path);
         }
 
@@ -267,9 +272,9 @@ namespace BepInEx.ModManager.Server.Services
             string bieCoreLibPath = Path.Combine(path, "BepInEx", "core", "BepInEx.dll");
             GameInfo gameInfo = new()
             {
-                Id = id,
-                Name = name,
-                Path = path,
+                Id = id ?? string.Empty,
+                Name = name ?? string.Empty,
+                Path = path ?? string.Empty,
                 Is64Bit = await FileTool.Is64BitAsync(unityPlayerPath).ConfigureAwait(false),
                 IsBIEInstalled = File.Exists(bieCoreLibPath),
                 IsBIEInitialized = File.Exists(Path.Combine(path, "BepInEx", "config", "BepInEx.cfg")),

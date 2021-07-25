@@ -1,7 +1,7 @@
 <template>
     <div>
         <a-avatar v-if="game.getIcon()" :src="game.getIcon()"></a-avatar>
-        {{ game.getName() }} ({{ game.getIs64bit() ? '64bit' : '32bit' }}) - BIE
+        {{ game.getName() }} ({{ game.getIs64bit() ? '64bit' : '32bit' | i18n }}) - BIE
         <a-icon :type="bieStatusIcon" :style="bieStatusIconStyle"></a-icon>
         <span v-if="game.getBieversion()">{{ game.getBieversion() }}</span>
     </div>
@@ -31,6 +31,12 @@ export default class GameTitle extends Vue {
             return 'color:green';
         }
         return 'color:orange';
+    }
+
+    created() {
+        i18next.on('languageChanged', (lng) => {
+            this.$forceUpdate();
+        });
     }
 }
 </script>

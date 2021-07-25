@@ -3,16 +3,16 @@
         <div class="top-pane">
             <h2>
                 <a-button type="primary" size="small" @click="refreshGames(false)">
-                    Refresh Game List ({{ games.length }})
+                    {{ 'Refresh Game List' | i18n }} ({{ games.length }})
                 </a-button>
                 <a-button type="primary" size="small" @click="refreshPluginRepo(false)">
-                    Refresh Plugin List ({{ repoPlugins.length }})
+                    {{ 'Refresh Mod List' | i18n }} ({{ repoPlugins.length }})
                 </a-button>
                 <a-button type="primary" size="small" @click="checkPluginRepoUpdates">
-                    Check Plugin Repo Updates
+                    {{ 'Check Mod Updates' | i18n }}
                 </a-button>
-                <a-button type="primary" size="small" @click="manageConfig"> Manage config </a-button>
-                <a-button type="primary" size="small" @click="managePlugins"> Manage plugins </a-button>
+                <a-button type="primary" size="small" @click="manageConfig"> {{ 'Edit Config' | i18n }} </a-button>
+                <a-button type="primary" size="small" @click="managePlugins"> {{ 'Manage Mods' | i18n }} </a-button>
                 <a-upload
                     name="file"
                     :directory="true"
@@ -23,7 +23,7 @@
                     :beforeUpload="handleAddGameBeforeUpload"
                     @change="handleAddGameChange"
                 >
-                    <a-button type="primary" size="small"> Add a game </a-button>
+                    <a-button type="primary" size="small"> {{ 'Add Game' | i18n }} </a-button>
                 </a-upload>
             </h2>
             <ConfigEditorModal
@@ -68,7 +68,7 @@ import ConfigEditorModal from './components/ConfigEditorModal.vue';
 import InstallPluginModal from './components/InstallPluginModal.vue';
 import { LongConnectResponse, ServerSideNotification } from './generated/Service_pb';
 import { CheckPluginUpdatesRequest, ListPluginsRequest, AddGameRequest } from './generated/Repo_pb';
-import { shell } from 'electron';
+import { ipcRenderer, shell } from 'electron';
 import path from 'path';
 import fs from 'fs';
 
@@ -211,8 +211,16 @@ export default class AppPage extends Vue {
         this.$message.warning(`Not implemented yet!`);
     }
 
+    i18n(text) {
+        i18next.t(text);
+    }
+
     created() {
-        document.title = `${i18next.t('BepInEx Mod Manager')} ${this.appVersion}`;
+        i18next.on('languageChanged', (lng) => {
+            this.setPageTitle();
+            this.$forceUpdate();
+        });
+        this.setPageTitle();
         longConnectStream.on('data', (response) => {
             const notification = response.getNotification();
             if (notification == ServerSideNotification.REFRESHGAMEINFO) {
@@ -235,6 +243,10 @@ export default class AppPage extends Vue {
 
         this.refreshGames();
         this.refreshPluginRepo();
+    }
+
+    setPageTitle() {
+        document.title = `${i18next.t('BepInEx Mod Manager')} ${this.appVersion}`;
     }
 }
 </script>

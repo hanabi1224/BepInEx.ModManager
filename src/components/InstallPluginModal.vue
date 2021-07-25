@@ -14,7 +14,7 @@
                     <a-upload-dragger
                         name="file"
                         accept=".dll,.zip"
-                        :multiple="false"
+                        :multiple="true"
                         :file-list="[]"
                         :show-upload-list="false"
                         :beforeUpload="handleFileBeforeUpload"
@@ -29,7 +29,7 @@
                     </a-upload-dragger>
                 </div>
                 <a-input-group compact>
-                    <a-input v-model="filterText" style="width: 60%" placeholder="Search"></a-input>
+                    <a-input v-model="filterText" style="width: 60%" :placeholder="i18n('Search')"></a-input>
                 </a-input-group>
                 <div class="container">
                     <a-list item-layout="horizontal" :data-source="filteredPlugins">
@@ -43,11 +43,11 @@
                             Actions:
                             <a-popconfirm
                                 :title="getConfirmInstallPluginMessage(item)"
-                                ok-text="Yes"
-                                cancel-text="No"
+                                :ok-text="i18n('Yes')"
+                                :cancel-text="i18n('No')"
                                 @confirm="installPlugin(item)"
                             >
-                                <a-button type="primary" size="small"> Install </a-button>
+                                <a-button type="primary" size="small"> {{ 'Install' | i18n }} </a-button>
                             </a-popconfirm>
                         </a-list-item>
                     </a-list>
@@ -96,7 +96,7 @@ export default class InstallPluginModal extends Vue {
     installing = false;
 
     get title() {
-        return `(${this.game?.getName()}) ${i18next.t('Select a plugin')}`;
+        return `(${this.game?.getName()}) ${i18next.t('Install Mods')}`;
     }
 
     get filteredPlugins() {
@@ -237,6 +237,12 @@ export default class InstallPluginModal extends Vue {
 
     todo() {
         this.$message.warning(`Not implemented yet!`);
+    }
+
+    created() {
+        i18next.on('languageChanged', (lng) => {
+            this.$forceUpdate();
+        });
     }
 }
 </script>

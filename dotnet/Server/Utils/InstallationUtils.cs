@@ -212,6 +212,7 @@ namespace BepInEx.ModManager.Server
                                     if (!Directory.EnumerateFiles(pluginDir, refFileName, SearchOption.AllDirectories).Any()
                                         && !Directory.EnumerateFiles(bieCoreDir, refFileName, SearchOption.AllDirectories).Any())
                                     {
+                                        Logger.Info($"Missing reference {refFileName}");
                                         pluginInfo.MissingReference = true;
                                         break;
                                     }

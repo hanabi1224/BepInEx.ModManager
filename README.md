@@ -30,7 +30,7 @@ The tool will update itself automatically once installed.
 
 ## Development
 
-- Install [.Net Framework 4.6.2 SDK](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net462-developer-pack-offline-installer)
+<!-- - Install [.Net Framework 4.6.2 SDK](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net462-developer-pack-offline-installer) -->
 - Install [.Net 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 - Install [nodejs lts](https://nodejs.org/en/)
 - Install [yarn](https://classic.yarnpkg.com/en/docs/install#windows-stable)
