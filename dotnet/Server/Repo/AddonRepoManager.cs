@@ -222,12 +222,15 @@ namespace BepInEx.ModManager.Server.Repo
             {
                 return false;
             }
+
+            visited.Add(bucket.Url);
+            await Task.Yield();
+
             Logger.Info($"Checking bucket url {bucket.Url}");
             await ClientNotification.WriteAsync(new()
             {
-                Message = $"Checking mod updates in repo {bucket.Url}",
+                Message = $"Checking updates: {bucket.Url}",
             }).ConfigureAwait(false);
-            visited.Add(bucket.Url);
 
             string urlKey = HashUtils.GetMD5String(bucket.Url);
             string urlCacheFilePath = Path.Combine(UrlCacheDir, urlKey);
@@ -254,20 +257,18 @@ namespace BepInEx.ModManager.Server.Repo
             bool hasErrors = false;
             try
             {
-                HttpResponseMessage response = await s_client.GetAsync(uri).ConfigureAwait(false);
-                // Too large file can be malicious
-                if (response.Content.Headers.ContentLength > 5 * 1024 * 1024)
+                using HttpResponseMessage headResponse = await s_client.SendAsync(new()
                 {
-                    return false;
-                }
-
+                    Method = HttpMethod.Head,
+                    RequestUri = uri,
+                }).ConfigureAwait(false);
                 string etag = null;
-                if (response.Headers.TryGetValues("ETag", out IEnumerable<string> etagHeaderValues))
+                if (headResponse.Headers.TryGetValues("ETag", out IEnumerable<string> etagHeaderValues))
                 {
                     etag = etagHeaderValues.FirstOrDefault();
                 }
                 string lastModifiedStr = null;
-                if (response.Headers.TryGetValues("Last-Modified", out IEnumerable<string> lmHeaderValues))
+                if (headResponse.Headers.TryGetValues("Last-Modified", out IEnumerable<string> lmHeaderValues))
                 {
                     lastModifiedStr = lmHeaderValues.FirstOrDefault();
                 }
@@ -304,6 +305,12 @@ namespace BepInEx.ModManager.Server.Repo
                     }
                 }
 
+                using HttpResponseMessage response = await s_client.GetAsync(uri).ConfigureAwait(false);
+                // Too large file can be malicious
+                if (response.Content.Headers.ContentLength > 5 * 1024 * 1024)
+                {
+                    return false;
+                }
                 byte[] bytes = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 string str = Encoding.UTF8.GetString(bytes);
                 List<AddonRepoBucketConfig> innerBuckets = null;

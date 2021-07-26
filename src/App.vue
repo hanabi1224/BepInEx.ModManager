@@ -229,15 +229,15 @@ export default class AppPage extends Vue {
                 this.refreshPluginRepo();
             } else {
                 const msg = response.getMessage();
-                this.log = `${this.log}\n${i18next.t(msg)}`;
-                const textarea = this.logWindow;
-                // v-model refresh takes time, maybe set dom property directly instead.
-                this.$nextTick().then(() => {
-                    textarea.scrollTop = textarea.scrollHeight;
-                });
-                // setTimeout(() => {
-                //     textarea.scrollTop = textarea.scrollHeight;
-                // }, 100);
+                if (msg) {
+                    // console.log(msg);
+                    this.log = `${this.log}\n${msg}`;
+                    const textarea = this.logWindow;
+                    // v-model refresh takes time, maybe set dom property directly instead.
+                    this.$nextTick().then(() => {
+                        textarea.scrollTop = textarea.scrollHeight;
+                    });
+                }
             }
         });
 
