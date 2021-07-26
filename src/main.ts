@@ -44,6 +44,7 @@ function drawMenuBar() {
       {
          label: i18next.t("Operations"),
          submenu: [
+            { role: 'reload', label: i18next.t('Refresh') },
             { role: 'toggleDevTools', label: i18next.t('Developer Tool') },
             { role: 'quit', label: i18next.t('Exit') },
          ],

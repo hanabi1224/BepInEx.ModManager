@@ -27,9 +27,12 @@
     'Install': '安装',
     'Uninstall': '卸载',
     'Upgrade': '升级',
+    'Actions': '操作',
     'Install Missing Dependencies': '安装缺失依赖',
     'Check For Update': '检查更新',
     'Exit': '退出',
+    'Refresh': '刷新',
+    'No Mod Installed': '未安装MOD',
 };
 
 export default dict;

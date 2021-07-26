@@ -42,7 +42,7 @@
                             <p v-if="item.getDesc()">{{ item.getDesc() }}</p>
                             <p v-if="item.getMiscs()">{{ item.getMiscs() }}</p>
                             <!-- <p>{{ item.getPath() }}</p> -->
-                            Actions:
+                            {{'Actions'|i18n}}:
                             <a-popconfirm
                                 v-if="game.getIsbieinstalled()"
                                 :title="i18n('Are you sure?')"
@@ -62,7 +62,7 @@
                             >
                             <a-popconfirm
                                 v-if="item.getMissingreference()"
-                                title="Are you sure?"
+                                :title="i18n('Are you sure?')"
                                 ok-text="Yes"
                                 cancel-text="No"
                                 @confirm="installPlugin(item.getPath())"
@@ -112,7 +112,7 @@ export default class GameCard extends Vue {
 
     get listLocale() {
         return {
-            emptyText: i18next.t('No plugins installed'),
+            emptyText: i18next.t('No Mod Installed'),
         };
     }
 
@@ -169,7 +169,7 @@ export default class GameCard extends Vue {
     }
 
     i18n(text) {
-        i18next.t(text);
+        return i18next.t(text);
     }
 
     created() {

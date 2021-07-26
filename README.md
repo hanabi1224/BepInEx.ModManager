@@ -14,11 +14,13 @@ windows
 ## Features
 
 - Automatically detect and list steam unity games
-- Manually add non-steam unity games
+- Manually add non-steam unity games (UnityPlayer.dll should present in that folder)
 - Install / Uninstall BepInEx for a game with automatic detection of 32bit / 64bit
 - Install / Uninstall / plugins for a game with dependencies auto-installed
+- Upload local plugins to the tool and use later
 - Notify when plugin has updates or missing dependencies
 - Plugin repository / github release page support
+- Steam game id based mod discovery
 - Automatically detect and download plugin updates
 - Automatical self update via electron-updater
 

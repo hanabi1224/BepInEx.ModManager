@@ -29,7 +29,12 @@
                     </a-upload-dragger>
                 </div>
                 <a-input-group compact>
-                    <a-input v-model="filterText" style="width: 60%" :placeholder="i18n('Search')"></a-input>
+                    <a-input
+                        v-model="filterText"
+                        @input="debounceFilterText"
+                        style="width: 60%"
+                        :placeholder="i18n('Search')"
+                    ></a-input>
                 </a-input-group>
                 <div class="container">
                     <a-list item-layout="horizontal" :data-source="filteredPlugins">
@@ -40,7 +45,7 @@
                             <p v-if="item.getDesc()">{{ item.getDesc() }}</p>
                             <p v-if="item.getMiscs()">{{ item.getMiscs() }}</p>
                             <p>{{ item.getPath() }}</p>
-                            Actions:
+                            {{'Actions'|i18n}}:
                             <a-popconfirm
                                 :title="getConfirmInstallPluginMessage(item)"
                                 :ok-text="i18n('Yes')"
@@ -93,10 +98,18 @@ export default class InstallPluginModal extends Vue {
 
     filterText = '';
 
+    loweredFilterText = '';
+
     installing = false;
 
     get title() {
         return `(${this.game?.getName()}) ${i18next.t('Install Mods')}`;
+    }
+
+    get debounceFilterText() {
+        return _.debounce(() => {
+            this.loweredFilterText = this.filterText?.toLowerCase() ?? '';
+        }, 500);
     }
 
     get filteredPlugins() {
@@ -104,12 +117,13 @@ export default class InstallPluginModal extends Vue {
             .filter((p) => {
                 if (this.filterText) {
                     // TODO: Debounce if search perf is bad
-                    const loweredFilterText = this.filterText.toLowerCase();
+                    const filter = this.loweredFilterText;
                     if (
-                        p.getId().toLowerCase().indexOf(loweredFilterText) < 0 &&
-                        p.getName().toLowerCase().indexOf(loweredFilterText) < 0 &&
-                        p.getDesc().toLowerCase().indexOf(loweredFilterText) < 0 &&
-                        p.getMiscs().toLowerCase().indexOf(loweredFilterText) < 0
+                        filter &&
+                        p.getId().toLowerCase().indexOf(filter) < 0 &&
+                        p.getName().toLowerCase().indexOf(filter) < 0 &&
+                        p.getDesc().toLowerCase().indexOf(filter) < 0 &&
+                        p.getMiscs().toLowerCase().indexOf(filter) < 0
                     ) {
                         return false;
                     }

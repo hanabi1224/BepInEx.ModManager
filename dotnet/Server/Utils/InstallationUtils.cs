@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BepInEx.ModManager.Server.Repo;
+using BepInEx.ModManager.Server.Services;
 using BepInEx.ModManager.Shared;
 using HtmlAgilityPack;
 using NLog;
@@ -210,10 +211,13 @@ namespace BepInEx.ModManager.Server
                                 foreach (BepInExAssemblyReferenceInfo reference in dllInfo.References)
                                 {
                                     string refFileName = $"{reference.Name}.dll";
-                                    if (!Directory.EnumerateFiles(pluginDir, refFileName, SearchOption.AllDirectories).Any()
-                                        && !Directory.EnumerateFiles(bieCoreDir, refFileName, SearchOption.AllDirectories).Any())
+                                    if (!Directory.EnumerateFiles(path, refFileName, SearchOption.AllDirectories).Any())
                                     {
                                         Logger.Info($"Missing reference {refFileName}");
+                                        await ClientNotification.WriteAsync(new()
+                                        {
+                                            Message = $"[{pluginInfo.Id}] Missing reference {refFileName}"
+                                        }).ConfigureAwait(false);
                                         pluginInfo.MissingReference = true;
                                         break;
                                     }

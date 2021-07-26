@@ -212,7 +212,7 @@ export default class AppPage extends Vue {
     }
 
     i18n(text) {
-        i18next.t(text);
+        return i18next.t(text);
     }
 
     created() {
