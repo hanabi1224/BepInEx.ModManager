@@ -28,6 +28,10 @@ windows
 
 - It does not support external mod resource files, embed them into mod DLL instead using [embedded resource](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly.getmanifestresourcestream?view=net-5.0#System_Reflection_Assembly_GetManifestResourceStream_System_String_).
 
+## Publish mods
+
+Merge the zip archive of your mod into [BepInEx.ModRepo](https://github.com/hanabi1224/BepInEx.ModRepo) main branch and it will be automatically published and picked up by the tool.
+
 ## Installation
 
 Download and install from the [release](https://github.com/hanabi1224/BepInEx.ModManager/releases/latest) page for the first time.
