@@ -262,6 +262,8 @@ namespace BepInEx.ModManager.Server.Repo
                     Method = HttpMethod.Head,
                     RequestUri = uri,
                 }).ConfigureAwait(false);
+                long? contentLength = headResponse.Content.Headers.ContentLength;
+                bool smallEnough = contentLength > 0 && contentLength < 1024 * 2;
                 string etag = null;
                 if (headResponse.Headers.TryGetValues("ETag", out IEnumerable<string> etagHeaderValues))
                 {
@@ -276,7 +278,7 @@ namespace BepInEx.ModManager.Server.Repo
                 {
                     if (etag == urlCache.ETag)
                     {
-                        if (!isUrlCacheFileExpired)
+                        if (!smallEnough && !isUrlCacheFileExpired)
                         {
                             Logger.Info("ETag cache hit");
                             return true;
@@ -292,7 +294,7 @@ namespace BepInEx.ModManager.Server.Repo
                 {
                     if (lastModified == urlCache.LastModified)
                     {
-                        if (!isUrlCacheChanged && !isUrlCacheFileExpired)
+                        if (!smallEnough && !isUrlCacheChanged && !isUrlCacheFileExpired)
                         {
                             Logger.Info("Last-Modified cache hit");
                             return true;

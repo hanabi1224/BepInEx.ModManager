@@ -33,6 +33,7 @@
     'Exit': '退出',
     'Refresh': '刷新',
     'No Mod Installed': '未安装MOD',
+    'Mod downloading, please retry later.': "MOD下载中，请稍后再试",
 };
 
 export default dict;

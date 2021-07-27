@@ -160,7 +160,11 @@ export default class AppPage extends Vue {
 
     installPlugin(game: GameInfo) {
         // console.log(`installPlugin - ${game.getName()}`);
-        this.installPluginGame = game;
+        if (this.repoPlugins.length == 0) {
+            this.$message.info(i18next.t('Mod downloading, please retry later.'));
+        } else {
+            this.installPluginGame = game;
+        }
     }
 
     closeInstallPluginModal() {
