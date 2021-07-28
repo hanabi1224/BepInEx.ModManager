@@ -5,7 +5,7 @@
                 <a-button type="primary" size="small" @click="openPath()"> {{'Open Game Folder'|i18n}} </a-button>
                 <a-popconfirm
                     v-if="!game.getIsbieinstalled()"
-                    :title="confirmInstallBIEMessage"
+                    :title="i18n('Are you sure?')"
                     ok-text="Yes"
                     cancel-text="No"
                     @confirm="installBIE"
@@ -13,7 +13,7 @@
                     <a-button type="primary" size="small"> {{'Install BIE'|i18n}} </a-button> </a-popconfirm
                 ><a-popconfirm
                     v-if="game.getIsbieinstalled()"
-                    :title="confirmUninstallBIEMessage"
+                    :title="i18n('Are you sure?')"
                     ok-text="Yes"
                     cancel-text="No"
                     @confirm="uninstallBIE"
@@ -100,14 +100,6 @@ export default class GameCard extends Vue {
 
     openPath() {
         return shell.openPath(this.game.getPath());
-    }
-
-    get confirmInstallBIEMessage() {
-        return `Install BIE for ${this.game.getName()}`;
-    }
-
-    get confirmUninstallBIEMessage() {
-        return `Uninstall BIE for ${this.game.getName()}`;
     }
 
     get listLocale() {

@@ -67,10 +67,6 @@ function drawMenuBar() {
    Menu.setApplicationMenu(menu);
 }
 
-function sendStatusToWindow(text) {
-   logger.info(text);
-}
-
 function createWindow() {
    win = new BrowserWindow({
       // autoHideMenuBar: true,
@@ -98,32 +94,33 @@ app.on('ready', async function () {
 });
 
 autoUpdater.on('checking-for-update', () => {
-   sendStatusToWindow('Checking for update...');
+   logger.info('Checking for update...');
 })
 autoUpdater.on('update-available', (info) => {
-   sendStatusToWindow('Update available.');
+   logger.info('Update available.');
    win.webContents.send('update-available', info);
 })
 autoUpdater.on('update-not-available', (info) => {
-   sendStatusToWindow('Update not available.');
+   logger.info('Update not available.');
 })
 autoUpdater.on('error', (err) => {
-   sendStatusToWindow('Error in auto-updater. ' + err);
+   logger.info('Error in auto-updater. ' + err);
 })
 autoUpdater.on('download-progress', (progressObj) => {
    let log_message = "Download speed: " + progressObj.bytesPerSecond;
    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
-   sendStatusToWindow(log_message);
+   logger.info(log_message);
 })
 autoUpdater.on('update-downloaded', (info) => {
-   sendStatusToWindow('Update downloaded');
+   logger.info('Update downloaded');
    win.webContents.send('update-downloaded', info);
 });
 
 app.on('ready', async () => {
    const result = await autoUpdater.checkForUpdatesAndNotify();
    if (result) {
+      logger.info('autoUpdater.checkForUpdatesAndNotify');
       logger.info(JSON.stringify(result));
    }
 });

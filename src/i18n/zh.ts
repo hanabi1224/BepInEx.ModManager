@@ -34,6 +34,8 @@
     'Refresh': '刷新',
     'No Mod Installed': '未安装MOD',
     'Mod downloading, please retry later.': "MOD下载中，请稍后再试",
+    'Update detected, downloading': '检测到更新，正在下载',
+    'Update downloaded, please restart': '更新下载完成，请重启',
 };
 
 export default dict;

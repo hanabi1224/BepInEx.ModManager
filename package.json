@@ -1,7 +1,7 @@
 {
   "name": "bie-mod-manager",
   "description": "A general BepInEx mod manager",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "license": "MIT",
   "private": true,
   "author": "hanabi1224",
@@ -12,13 +12,16 @@
   "build": {
     "appId": "BepInEx.ModManager",
     "productName": "BepInEx.ModManager",
+    "nsis": {
+      "artifactName": "${productName}.Setup.${version}.${ext}",
+      "publish": [
+        "github"
+      ]
+    },
     "win": {
       "target": [
         "nsis",
         "zip"
-      ],
-      "publish": [
-        "github"
       ]
     },
     "files": [

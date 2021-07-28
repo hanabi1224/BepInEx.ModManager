@@ -225,6 +225,21 @@ export default class AppPage extends Vue {
             this.$forceUpdate();
         });
         this.setPageTitle();
+
+        ipcRenderer.on('update-available', (event, info) => {
+            console.log('update-available');
+            console.log(event);
+            console.log(info);
+            this.$message.info(i18next.t('Update detected, downloading'));
+        });
+
+        ipcRenderer.on('update-downloaded', (event, info) => {
+            console.log('update-downloaded');
+            console.log(event);
+            console.log(info);
+            this.$message.info(i18next.t('Update downloaded, please restart'));
+        });
+
         longConnectStream.on('data', (response) => {
             const notification = response.getNotification();
             if (notification == ServerSideNotification.REFRESHGAMEINFO) {

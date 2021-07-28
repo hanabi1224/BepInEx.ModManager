@@ -26,7 +26,7 @@ Vue.config.productionTip = false;
 
 Vue.prototype.$message.config({
     top: `20vh`,
-    duration: 1,
+    duration: 2,
     maxCount: 2,
 });
 
