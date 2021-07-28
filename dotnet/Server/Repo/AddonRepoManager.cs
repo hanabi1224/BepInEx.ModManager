@@ -180,7 +180,12 @@ namespace BepInEx.ModManager.Server.Repo
             {
                 // TODO: Thread safty
                 HashSet<string> visited = new HashSet<string>();
-                List<Task> tasks = new();
+                List<Task> tasks = new() { 
+                    UpdateBucketInnerAsync(new()
+                    {
+                        Url = "https://bie-mod-repo.vercel.app/common.json",
+                    }, visited)                    
+                };
 
                 if (ModManagerServiceImpl.GameSnapshot?.Count > 0)
                 {

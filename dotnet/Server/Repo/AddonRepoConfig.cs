@@ -39,15 +39,6 @@ namespace BepInEx.ModManager.Server.Repo
             {
                 new()
                 {
-                    Name = "BepInEx.Utility",
-                    Url = "https://github.com/BepInEx/BepInEx.Utility/releases/latest",
-                    Patterns = new()
-                    {
-                        "**/BepInEx.*.zip"
-                    },
-                },
-                new()
-                {
                     Name = "BepInEx.ConfigurationManager",
                     Url = "https://github.com/BepInEx/BepInEx.ConfigurationManager/releases/latest",
                     Patterns = new()
