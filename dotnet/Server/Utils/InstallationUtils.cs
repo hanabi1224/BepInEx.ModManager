@@ -10,6 +10,7 @@ using BepInEx.ModManager.Server.Services;
 using BepInEx.ModManager.Shared;
 using HtmlAgilityPack;
 using NLog;
+using NuGet.Versioning;
 
 namespace BepInEx.ModManager.Server
 {
@@ -144,7 +145,7 @@ namespace BepInEx.ModManager.Server
                             {
                                 localRefFile = Directory
                                     .EnumerateFiles(AddonRepoManager.Instance.PluginStoreRoot, $"{reference.Name}.dll", SearchOption.AllDirectories)
-                                    .OrderByDescending(_ => _) // Latest version
+                                    .OrderByDescending(_ => NuGetVersion.Parse(Path.GetFileName(Path.GetDirectoryName(_)))) // Latest version
                                     .FirstOrDefault();
                             }
                             if (!string.IsNullOrEmpty(localRefFile)
