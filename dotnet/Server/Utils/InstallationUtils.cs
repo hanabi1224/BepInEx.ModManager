@@ -117,6 +117,22 @@ namespace BepInEx.ModManager.Server
                     {
                         File.Delete(p.Path);
                     }
+
+                    // Resource files
+                    string pluginDir = Path.GetDirectoryName(pluginPath);
+                    string resourceFileName = $"{Path.GetFileNameWithoutExtension(pluginPath)}.resources.dll";
+                    foreach (string resx in Directory.EnumerateFiles(pluginDir, resourceFileName, SearchOption.AllDirectories))
+                    {
+                        string resxDir = Path.GetFileName(Path.GetDirectoryName(resx));
+                        string resxDestDir = Path.Combine(destDir, resxDir);
+                        if (!Directory.Exists(resxDestDir))
+                        {
+                            Directory.CreateDirectory(resxDestDir);
+                        }
+                        string resxDestFileName = Path.Combine(resxDestDir, Path.GetFileName(resx));
+                        File.Copy(resx, resxDestFileName, true);
+                    }
+
                     // References
                     if (info.References?.Count > 0)
                     {
@@ -148,7 +164,7 @@ namespace BepInEx.ModManager.Server
                                     }
                                 }
 
-                                await IntallPluginAsync(gamePath: gamePath, pluginPath: localRefFile);
+                                await IntallPluginAsync(gamePath: gamePath, pluginPath: localRefFile).ConfigureAwait(false);
                                 Logger.Info($"Dependency installed: {reference.Name}.dll");
                             }
                         }

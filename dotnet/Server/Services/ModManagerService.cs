@@ -89,7 +89,7 @@ namespace BepInEx.ModManager.Server.Services
             if (!success)
             {
                 using MemoryStream ms = new(bytes) { Position = 0 };
-                success = await AddonRepoManager.Instance.TryAddDllAsync(request.FileName, ms).ConfigureAwait(false);
+                success = await AddonRepoManager.Instance.TryAddDllAsync(request.FileName, ms, null).ConfigureAwait(false);
             }
             return new() { Success = success };
         }

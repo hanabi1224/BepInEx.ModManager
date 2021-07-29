@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BepInEx.ModManager.Server.Services;
@@ -13,6 +15,7 @@ using DotNet.Globbing;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using NLog;
+using NuGet.Versioning;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -94,7 +97,7 @@ namespace BepInEx.ModManager.Server.Repo
             Config = config;
         }
 
-        public async Task<BepInExAssemblyInfo> AddPluginAsync(string file, bool overwrite = true)
+        public async Task<BepInExAssemblyInfo> AddPluginAsync(string file, CultureInfo culture, bool overwrite = true)
         {
             if (!File.Exists(file))
             {
@@ -114,6 +117,30 @@ namespace BepInEx.ModManager.Server.Repo
             }
 
             string destDir = Path.Combine(PluginStoreRoot, Path.GetFileNameWithoutExtension(file), pi.Version);
+            if (culture != null)
+            {
+                string mainAssemblyName = Regex.Replace(Path.GetFileNameWithoutExtension(file), @"\.resources$", string.Empty, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                string mainAssemblyDir = Path.Combine(PluginStoreRoot, mainAssemblyName);
+                List<string> mainAssemblyVersionDirs = Directory
+                    .EnumerateFiles(mainAssemblyDir, $"{mainAssemblyName}.dll", SearchOption.AllDirectories).ToList();
+                string mainAssemblyVersionDir = mainAssemblyVersionDirs
+                    .Select(_ => Path.GetDirectoryName(_))
+                    .FirstOrDefault(_ =>
+                    {
+                        if (NuGetVersion.TryParse(Path.GetFileName(_), out NuGetVersion verMain)
+                            && NuGetVersion.TryParse(pi.Version, out NuGetVersion verResx))
+                        {
+                            return verMain == verResx;
+                        }
+                        return false;
+                    });
+                if (string.IsNullOrEmpty(mainAssemblyVersionDir))
+                {
+                    return null;
+                }
+                destDir = Path.Combine(mainAssemblyVersionDir, culture.Name);
+            }
+
             string destFile = Path.Combine(destDir, Path.GetFileName(file));
             if (!Directory.Exists(destDir))
             {
@@ -148,6 +175,11 @@ namespace BepInEx.ModManager.Server.Repo
             {
                 try
                 {
+                    bool isResourceDll = file.EndsWith(".resources.dll", StringComparison.OrdinalIgnoreCase);
+                    if (isResourceDll)
+                    {
+                        continue;
+                    }
                     if (BepInExAssemblyInfo.TryRead(file, out BepInExAssemblyInfo meta, shallow: false))
                     {
                         plugins.Add(new()
@@ -180,11 +212,12 @@ namespace BepInEx.ModManager.Server.Repo
             {
                 // TODO: Thread safty
                 HashSet<string> visited = new HashSet<string>();
-                List<Task> tasks = new() { 
+                List<Task> tasks = new()
+                {
                     UpdateBucketInnerAsync(new()
                     {
                         Url = "https://bie-mod-repo.vercel.app/common.json",
-                    }, visited)                    
+                    }, visited)
                 };
 
                 if (ModManagerServiceImpl.GameSnapshot?.Count > 0)
@@ -425,7 +458,27 @@ namespace BepInEx.ModManager.Server.Repo
                 {
                     if (entry.FullName.EndsWith(".dll"))
                     {
-                        await TryAddDllAsync(entry.FullName, entry.Open()).ConfigureAwait(false);
+                        bool isResourceFile = entry.FullName.EndsWith(".resources.dll", StringComparison.OrdinalIgnoreCase);
+                        if (isResourceFile)
+                        {
+                            try
+                            {
+                                string cultureText = Path.GetFileName(Path.GetDirectoryName(entry.FullName));
+                                CultureInfo culture = CultureInfo.GetCultureInfo(cultureText);
+                                if (culture != null)
+                                {
+                                    await TryAddDllAsync(entry.FullName, entry.Open(), culture).ConfigureAwait(false);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Logger.Error(e);
+                            }
+                        }
+                        else
+                        {
+                            await TryAddDllAsync(entry.FullName, entry.Open(), null).ConfigureAwait(false);
+                        }
                     }
                 }
                 return true;
@@ -437,7 +490,7 @@ namespace BepInEx.ModManager.Server.Repo
             }
         }
 
-        public async Task<bool> TryAddDllAsync(string fileName, Stream stream)
+        public async Task<bool> TryAddDllAsync(string fileName, Stream stream, CultureInfo culture)
         {
             try
             {
@@ -447,7 +500,7 @@ namespace BepInEx.ModManager.Server.Repo
                 {
                     await stream.CopyToAsync(fileStream).ConfigureAwait(false);
                 }
-                BepInExAssemblyInfo r = await AddPluginAsync(destPath, overwrite: true).ConfigureAwait(false);
+                BepInExAssemblyInfo r = await AddPluginAsync(destPath, culture, overwrite: true).ConfigureAwait(false);
                 return r != null;
             }
             catch (Exception e)
