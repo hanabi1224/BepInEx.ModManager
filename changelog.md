@@ -1,3 +1,8 @@
+## 0.1.7
+
+- Upgrade bundled BepInEx to 5.4.14
+- Allow game in subdirectory of registered steam game root 
+
 ## 0.1.6
 
 - UI tweak

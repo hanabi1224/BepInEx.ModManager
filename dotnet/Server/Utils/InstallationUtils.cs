@@ -265,7 +265,7 @@ namespace BepInEx.ModManager.Server
 
         public static bool IsUnityGameRoot(string dir)
         {
-            return File.Exists(Path.Combine(dir, "UnityPlayer.dll"));
+            return File.Exists(Path.Combine(dir, Constants.UnityPlayer)) && Directory.EnumerateFiles(dir, Constants.AssemblyCSharp, SearchOption.AllDirectories).Any();
         }
     }
 }

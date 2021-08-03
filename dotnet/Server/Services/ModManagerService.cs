@@ -264,11 +264,17 @@ namespace BepInEx.ModManager.Server.Services
             {
                 name = Path.GetFileName(path);
             }
-            string unityPlayerPath = Path.Combine(path, Constants.UnityPlayer);
+            string unityPlayerPath = Directory.EnumerateFiles(path, Constants.UnityPlayer, SearchOption.AllDirectories).FirstOrDefault();
             if (!File.Exists(unityPlayerPath))
             {
                 return null;
             }
+            path = Path.GetDirectoryName(unityPlayerPath);
+            if (!InstallationUtils.IsUnityGameRoot(path))
+            {
+                return null;
+            }
+
             string bieCoreLibPath = Path.Combine(path, "BepInEx", "core", "BepInEx.dll");
             GameInfo gameInfo = new()
             {
