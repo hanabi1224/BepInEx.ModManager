@@ -22,6 +22,9 @@
       "target": [
         "nsis",
         "zip"
+      ],
+      "publish": [
+        "github"
       ]
     },
     "files": [
@@ -32,7 +35,8 @@
     "afterPack": "./customAfterPackHook.js"
   },
   "scripts": {
-    "dist": "yarn clean && yarn build && yarn server:prod && electron-builder --publish onTag",
+    "dist": "yarn clean && yarn build && yarn server:prod && electron-builder --publish onTagOrDraft",
+    "release": "yarn dist",
     "server:prod": "dotnet publish dotnet/Server -c Release -v m --self-contained -r win-x64 /p:PublishSingleFile=true -o out/server",
     "server:dev": "dotnet publish dotnet/Server -c Debug -v m --self-contained -r win-x64 -o out/server",
     "build": "parcel build src/main.ts src/i18n/*.ts src/*.html -t electron -d out --public-url . --no-source-maps",
