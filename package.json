@@ -1,7 +1,7 @@
 {
   "name": "bie-mod-manager",
   "description": "A general BepInEx mod manager",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "license": "MIT",
   "private": true,
   "author": "hanabi1224",
@@ -35,6 +35,7 @@
     "afterPack": "./customAfterPackHook.js"
   },
   "scripts": {
+    "dist-local": "yarn clean && yarn build && yarn server:prod && electron-builder --publish onTag",
     "dist": "yarn clean && yarn build && yarn server:prod && electron-builder --publish onTagOrDraft",
     "release": "yarn dist",
     "server:prod": "dotnet publish dotnet/Server -c Release -v m --self-contained -r win-x64 /p:PublishSingleFile=true -o out/server",
@@ -48,13 +49,13 @@
     "lint-fix": "yarn eslint --fix src/ --ext .ts,.js,.vue"
   },
   "dependencies": {
-    "ant-design-vue": "^1.7.6",
+    "ant-design-vue": "^1.7.7",
     "codemirror": "^5.62.2",
     "electron-log": "^4.4.1",
     "electron-updater": "^4.3.9",
     "google-protobuf": "^3.17.3",
     "grpc-web": "^1.2.1",
-    "i18next": "^20.3.5",
+    "i18next": "^20.4.0",
     "lodash": "^4.17.21",
     "os-locale": "^5.0.0",
     "vue": "^2.6.14",
@@ -64,22 +65,22 @@
     "vue-property-decorator": "^9.1.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.8",
-    "@babel/preset-env": "^7.14.9",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
     "@types/codemirror": "^5.60.2",
-    "@types/lodash": "^4.14.171",
-    "@typescript-eslint/eslint-plugin": "^4.29.0",
-    "@typescript-eslint/parser": "^4.29.0",
+    "@types/lodash": "^4.14.172",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
     "@vue/component-compiler-utils": "^3.2.2",
-    "electron": "^13.1.7",
+    "electron": "^13.1.9",
     "electron-builder": "^22.11.7",
     "eslint": "^7.32.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-vue": "^7.15.1",
+    "eslint-plugin-vue": "^7.16.0",
     "parcel-bundler": "^1.12.5",
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
-    "sass": "^1.37.2",
+    "sass": "^1.37.5",
     "typescript": "^4.3.5",
     "vue-eslint-parser": "^7.10.0",
     "vue-template-compiler": "^2.6.14"
