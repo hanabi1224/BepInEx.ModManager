@@ -1,20 +1,23 @@
 <template>
-    <div>
-        <a-modal
-            :title="i18n('Config Editor')"
-            :visible="visible"
-            :cancel-text="i18n('Close')"
-            :ok-text="i18n('Save')"
-            @ok="save"
-            @cancel="close"
-        >
-            <a-spin :spinning="saving" size="large">
-                <div class="container">
-                    <div ref="editor"></div>
-                </div>
-            </a-spin>
-        </a-modal>
-    </div>
+  <div>
+    <a-modal
+      :title="i18n('Config Editor')"
+      :visible="visible"
+      :cancel-text="i18n('Close')"
+      :ok-text="i18n('Save')"
+      @ok="save"
+      @cancel="close"
+    >
+      <a-spin
+        :spinning="saving"
+        size="large"
+      >
+        <div class="container">
+          <div ref="editor"></div>
+        </div>
+      </a-spin>
+    </a-modal>
+  </div>
 </template>
 
 <script lang="ts">

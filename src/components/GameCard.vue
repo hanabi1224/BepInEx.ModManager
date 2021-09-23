@@ -1,82 +1,131 @@
 <template>
-    <div>
-        <a-spin size="large" :spinning="pending">
-            <p>
-                <a-button type="primary" size="small" @click="openPath()"> {{'Open Game Folder'|i18n}} </a-button>
-                <a-popconfirm
-                    v-if="!game.getIsbieinstalled()"
-                    :title="i18n('Are you sure?')"
-                    ok-text="Yes"
-                    cancel-text="No"
-                    @confirm="installBIE"
-                >
-                    <a-button type="primary" size="small"> {{'Install BIE'|i18n}} </a-button> </a-popconfirm
-                ><a-popconfirm
-                    v-if="game.getIsbieinstalled()"
-                    :title="i18n('Are you sure?')"
-                    ok-text="Yes"
-                    cancel-text="No"
-                    @confirm="uninstallBIE"
-                >
-                    <a-button type="danger" size="small"> {{'Uninstall BIE'|i18n}} </a-button>
-                </a-popconfirm>
-                <a-button v-if="game.getIsbieinstalled()" type="primary" size="small" @click="openInstallPluginModal">
-                    {{'Install Mods'|i18n}}
-                </a-button>
-                <p v-if="game.getId()">{{'Game Id'|i18n}}: {{ game.getId() }}</p>
-                <!-- BIE installed: {{ g.getIsbieinstalled() }},
+  <div>
+    <a-spin
+      size="large"
+      :spinning="pending"
+    >
+      <p>
+        <a-button
+          type="primary"
+          size="small"
+          @click="openPath()"
+        >
+          {{ 'Open Game Folder' | i18n }}
+        </a-button>
+        <a-popconfirm
+          v-if="!game.getIsbieinstalled()"
+          :title="i18n('Are you sure?')"
+          ok-text="Yes"
+          cancel-text="No"
+          @confirm="installBIE"
+        >
+          <a-button
+            type="primary"
+            size="small"
+          >
+            {{ 'Install BIE' | i18n }}
+          </a-button>
+        </a-popconfirm><a-popconfirm
+          v-if="game.getIsbieinstalled()"
+          :title="i18n('Are you sure?')"
+          ok-text="Yes"
+          cancel-text="No"
+          @confirm="uninstallBIE"
+        >
+          <a-button
+            type="danger"
+            size="small"
+          >
+            {{ 'Uninstall BIE' | i18n }}
+          </a-button>
+        </a-popconfirm>
+        <a-button
+          v-if="game.getIsbieinstalled()"
+          type="primary"
+          size="small"
+          @click="openInstallPluginModal"
+        >
+          {{ 'Install Mods' | i18n }}
+        </a-button>
+      </p>
+      <p v-if="game.getId()">
+        {{ 'Game Id' | i18n }}: {{ game.getId() }}
+      </p>
+      <p>
+        <!-- BIE installed: {{ g.getIsbieinstalled() }},
                 initialized {{ g.getIsbieinitialized() }} -->
-            </p>
-            <div v-if="game.getIsbieinstalled()">
-                <div>
-                    <a-list
-                        item-layout="horizontal"
-                        size="large"
-                        :data-source="game.getPluginsList()"
-                        :locale="listLocale"
-                    >
-                        <a-list-item :key="item.getName()" slot="renderItem" slot-scope="item">
-                            <a-list-item-meta :description="item.getName()">
-                                <span slot="title">{{ item.getId() }}(v{{ item.getVersion() }})</span>
-                            </a-list-item-meta>
-                            <p v-if="item.getDesc()">{{ item.getDesc() }}</p>
-                            <p v-if="item.getMiscs()">{{ item.getMiscs() }}</p>
-                            <!-- <p>{{ item.getPath() }}</p> -->
-                            {{'Actions'|i18n}}:
-                            <a-popconfirm
-                                v-if="game.getIsbieinstalled()"
-                                :title="i18n('Are you sure?')"
-                                :ok-text="i18n('Yes')"
-                                :cancel-text="i18n('No')"
-                                @confirm="uninstallPlugin(item)"
-                            >
-                                <a-button type="danger" size="small"> {{'Uninstall'|i18n}} </a-button> </a-popconfirm
-                            ><a-popconfirm
-                                v-if="item.getHasupdate()"
-                                :title="i18n('Are you sure?')"
-                                :ok-text="i18n('Yes')"
-                                :cancel-text="i18n('No')"
-                                @confirm="installPlugin(item.getUpgradepath())"
-                            >
-                                <a-button type="primary" size="small"> {{'Upgrade'|i18n}} </a-button></a-popconfirm
-                            >
-                            <a-popconfirm
-                                v-if="item.getMissingreference()"
-                                :title="i18n('Are you sure?')"
-                                ok-text="Yes"
-                                cancel-text="No"
-                                @confirm="installPlugin(item.getPath())"
-                            >
-                                <a-button type="danger" size="small">
-                                    {{'Install Missing Dependencies'|i18n}}
-                                </a-button></a-popconfirm
-                            >
-                        </a-list-item>
-                    </a-list>
-                </div>
-            </div>
-        </a-spin>
-    </div>
+      </p>
+      <div v-if="game.getIsbieinstalled()">
+        <div>
+          <a-list
+            item-layout="horizontal"
+            size="large"
+            :data-source="game.getPluginsList()"
+            :locale="listLocale"
+          >
+            <a-list-item
+              :key="item.getName()"
+              slot="renderItem"
+              slot-scope="item"
+            >
+              <a-list-item-meta :description="item.getName()">
+                <span slot="title">{{ item.getId() }}(v{{ item.getVersion() }})</span>
+              </a-list-item-meta>
+              <p v-if="item.getDesc()">
+                {{ item.getDesc() }}
+              </p>
+              <p v-if="item.getMiscs()">
+                {{ item.getMiscs() }}
+              </p>
+              <!-- <p>{{ item.getPath() }}</p> -->
+              {{ 'Actions' | i18n }}:
+              <a-popconfirm
+                v-if="game.getIsbieinstalled()"
+                :title="i18n('Are you sure?')"
+                :ok-text="i18n('Yes')"
+                :cancel-text="i18n('No')"
+                @confirm="uninstallPlugin(item)"
+              >
+                <a-button
+                  type="danger"
+                  size="small"
+                >
+                  {{ 'Uninstall' | i18n }}
+                </a-button>
+              </a-popconfirm><a-popconfirm
+                v-if="item.getHasupdate()"
+                :title="i18n('Are you sure?')"
+                :ok-text="i18n('Yes')"
+                :cancel-text="i18n('No')"
+                @confirm="installPlugin(item.getUpgradepath())"
+              >
+                <a-button
+                  type="primary"
+                  size="small"
+                >
+                  {{ 'Upgrade' | i18n }}
+                </a-button>
+              </a-popconfirm>
+              <a-popconfirm
+                v-if="item.getMissingreference()"
+                :title="i18n('Are you sure?')"
+                ok-text="Yes"
+                cancel-text="No"
+                @confirm="installPlugin(item.getPath())"
+              >
+                <a-button
+                  type="danger"
+                  size="small"
+                >
+                  {{ 'Install Missing Dependencies' | i18n }}
+                </a-button>
+              </a-popconfirm>
+            </a-list-item>
+          </a-list>
+        </div>
+      </div>
+    </a-spin>
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,59 +1,102 @@
 <template>
-    <div>
-        <div class="top-pane">
-            <h2>
-                <a-button type="primary" size="small" @click="refreshGames(false)">
-                    {{ 'Refresh Game List' | i18n }} ({{ games.length }})
-                </a-button>
-                <a-button type="primary" size="small" @click="refreshPluginRepo(false)">
-                    {{ 'Refresh Mod List' | i18n }} ({{ repoPlugins.length }})
-                </a-button>
-                <a-button type="primary" size="small" @click="checkPluginRepoUpdates">
-                    {{ 'Check Mod Updates' | i18n }}
-                </a-button>
-                <a-button type="primary" size="small" @click="manageConfig"> {{ 'Edit Config' | i18n }} </a-button>
-                <a-button type="primary" size="small" @click="managePlugins"> {{ 'Manage Mods' | i18n }} </a-button>
-                <a-upload
-                    name="file"
-                    :directory="true"
-                    :multiple="false"
-                    :file-list="[]"
-                    :show-upload-list="false"
-                    accept=".dll"
-                    :beforeUpload="handleAddGameBeforeUpload"
-                    @change="handleAddGameChange"
-                >
-                    <a-button type="primary" size="small"> {{ 'Add Game' | i18n }} </a-button>
-                </a-upload>
-            </h2>
-            <ConfigEditorModal
-                :show="showConfigEditor"
-                @refreshGames="refreshGames"
-                @close="showConfigEditor = false"
-            ></ConfigEditorModal>
-        </div>
-        <div class="container">
-            <div class="game-pane">
-                <a-collapse default-active-key="0">
-                    <a-collapse-panel v-for="(g, i) in games" :key="i">
-                        <game-title slot="header" :game="g"></game-title>
-                        <GameCard :game="g" @refreshGames="refreshGames" @installPlugin="installPlugin"></GameCard>
-                    </a-collapse-panel>
-                </a-collapse>
-                <InstallPluginModal
-                    :game="installPluginGame"
-                    :plugins="repoPlugins"
-                    @close="closeInstallPluginModal"
-                    @refreshGames="refreshGames"
-                    @refreshPluginRepo="refreshPluginRepo"
-                ></InstallPluginModal>
-            </div>
-            <div class="log-pane">
-                <!-- <h4>Log</h4> -->
-                <textarea ref="logWindow" v-model="log" disabled="disabled"></textarea>
-            </div>
-        </div>
+  <div>
+    <div class="top-pane">
+      <h2>
+        <a-button
+          type="primary"
+          size="small"
+          @click="refreshGames(false)"
+        >
+          {{ 'Refresh Game List' | i18n }} ({{ games.length }})
+        </a-button>
+        <a-button
+          type="primary"
+          size="small"
+          @click="refreshPluginRepo(false)"
+        >
+          {{ 'Refresh Mod List' | i18n }} ({{ repoPlugins.length }})
+        </a-button>
+        <a-button
+          type="primary"
+          size="small"
+          @click="checkPluginRepoUpdates"
+        >
+          {{ 'Check Mod Updates' | i18n }}
+        </a-button>
+        <a-button
+          type="primary"
+          size="small"
+          @click="manageConfig"
+        >
+          {{ 'Edit Config' | i18n }}
+        </a-button>
+        <a-button
+          type="primary"
+          size="small"
+          @click="managePlugins"
+        >
+          {{ 'Manage Mods' | i18n }}
+        </a-button>
+        <a-upload
+          name="file"
+          :directory="true"
+          :multiple="false"
+          :file-list="[]"
+          :show-upload-list="false"
+          accept=".dll"
+          :before-upload="handleAddGameBeforeUpload"
+          @change="handleAddGameChange"
+        >
+          <a-button
+            type="primary"
+            size="small"
+          >
+            {{ 'Add Game' | i18n }}
+          </a-button>
+        </a-upload>
+      </h2>
+      <ConfigEditorModal
+        :show="showConfigEditor"
+        @refreshGames="refreshGames"
+        @close="showConfigEditor = false"
+      ></ConfigEditorModal>
     </div>
+    <div class="container">
+      <div class="game-pane">
+        <a-collapse default-active-key="0">
+          <a-collapse-panel
+            v-for="(g, i) in games"
+            :key="i"
+          >
+            <game-title
+              slot="header"
+              :game="g"
+            ></game-title>
+            <GameCard
+              :game="g"
+              @refreshGames="refreshGames"
+              @installPlugin="installPlugin"
+            ></GameCard>
+          </a-collapse-panel>
+        </a-collapse>
+        <InstallPluginModal
+          :game="installPluginGame"
+          :plugins="repoPlugins"
+          @close="closeInstallPluginModal"
+          @refreshGames="refreshGames"
+          @refreshPluginRepo="refreshPluginRepo"
+        ></InstallPluginModal>
+      </div>
+      <div class="log-pane">
+        <!-- <h4>Log</h4> -->
+        <textarea
+          ref="logWindow"
+          v-model="log"
+          disabled="disabled"
+        ></textarea>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -196,16 +239,13 @@ export default class AppPage extends Vue {
         console.log(dir);
         const request = new AddGameRequest().setPath(dir);
         grpcClient.addGame(request, {}, (err, response) => {
-            try {
-                if (err) {
-                    this.$message.error(err.message);
-                } else if (response.getSuccess()) {
-                    this.refreshGames();
-                    this.$message.success('Done');
-                } else {
-                    this.$message.warn(response.getError());
-                }
-            } finally {
+            if (err) {
+                this.$message.error(err.message);
+            } else if (response.getSuccess()) {
+                this.refreshGames();
+                this.$message.success('Done');
+            } else {
+                this.$message.warn(response.getError());
             }
         });
         return false;

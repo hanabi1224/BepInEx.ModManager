@@ -1,65 +1,85 @@
 <template>
-    <div>
-        <a-modal
-            :title="title"
-            :visible="!!game"
-            :cancel-text="i18n('Close')"
-            :ok-text="null"
-            :ok-button-props="{ style: { display: 'none' } }"
-            @ok="close"
-            @cancel="close"
-        >
-            <a-spin v-if="!!game" :spinning="installing" size="large">
-                <div class="upload-zone">
-                    <a-upload-dragger
-                        name="file"
-                        accept=".dll,.zip"
-                        :multiple="true"
-                        :file-list="[]"
-                        :show-upload-list="false"
-                        :beforeUpload="handleFileBeforeUpload"
-                        @change="handleFileUpload"
-                    >
-                        <p class="ant-upload-drag-icon">
-                            <a-icon type="upload" />
-                        </p>
-                        <p class="ant-upload-text">
-                            {{ i18n('Upload') }}
-                        </p>
-                    </a-upload-dragger>
-                </div>
-                <a-input-group compact>
-                    <a-input
-                        v-model="filterText"
-                        @input="debounceFilterText"
-                        style="width: 60%"
-                        :placeholder="i18n('Search')"
-                    ></a-input>
-                </a-input-group>
-                <div class="container">
-                    <a-list item-layout="horizontal" :data-source="filteredPlugins">
-                        <a-list-item slot="renderItem" :key="getPluginKey(item)" slot-scope="item">
-                            <a-list-item-meta :description="item.getName()">
-                                <span slot="title">{{ item.getId() }}(v{{ item.getVersion() }})</span>
-                            </a-list-item-meta>
-                            <p v-if="item.getDesc()">{{ item.getDesc() }}</p>
-                            <p v-if="item.getMiscs()">{{ item.getMiscs() }}</p>
-                            <p>{{ item.getPath() }}</p>
-                            {{'Actions'|i18n}}:
-                            <a-popconfirm
-                                :title="getConfirmInstallPluginMessage(item)"
-                                :ok-text="i18n('Yes')"
-                                :cancel-text="i18n('No')"
-                                @confirm="installPlugin(item)"
-                            >
-                                <a-button type="primary" size="small"> {{ 'Install' | i18n }} </a-button>
-                            </a-popconfirm>
-                        </a-list-item>
-                    </a-list>
-                </div>
-            </a-spin>
-        </a-modal>
-    </div>
+  <div>
+    <a-modal
+      :title="title"
+      :visible="!!game"
+      :cancel-text="i18n('Close')"
+      :ok-text="null"
+      :ok-button-props="{ style: { display: 'none' } }"
+      @ok="close"
+      @cancel="close"
+    >
+      <a-spin
+        v-if="!!game"
+        :spinning="installing"
+        size="large"
+      >
+        <div class="upload-zone">
+          <a-upload-dragger
+            name="file"
+            accept=".dll,.zip"
+            :multiple="true"
+            :file-list="[]"
+            :show-upload-list="false"
+            :before-upload="handleFileBeforeUpload"
+            @change="handleFileUpload"
+          >
+            <p class="ant-upload-drag-icon">
+              <a-icon type="upload" />
+            </p>
+            <p class="ant-upload-text">
+              {{ i18n('Upload') }}
+            </p>
+          </a-upload-dragger>
+        </div>
+        <a-input-group compact>
+          <a-input
+            v-model="filterText"
+            style="width: 60%"
+            :placeholder="i18n('Search')"
+            @input="debounceFilterText"
+          ></a-input>
+        </a-input-group>
+        <div class="container">
+          <a-list
+            item-layout="horizontal"
+            :data-source="filteredPlugins"
+          >
+            <a-list-item
+              slot="renderItem"
+              :key="getPluginKey(item)"
+              slot-scope="item"
+            >
+              <a-list-item-meta :description="item.getName()">
+                <span slot="title">{{ item.getId() }}(v{{ item.getVersion() }})</span>
+              </a-list-item-meta>
+              <p v-if="item.getDesc()">
+                {{ item.getDesc() }}
+              </p>
+              <p v-if="item.getMiscs()">
+                {{ item.getMiscs() }}
+              </p>
+              <p>{{ item.getPath() }}</p>
+              {{ 'Actions'|i18n }}:
+              <a-popconfirm
+                :title="getConfirmInstallPluginMessage(item)"
+                :ok-text="i18n('Yes')"
+                :cancel-text="i18n('No')"
+                @confirm="installPlugin(item)"
+              >
+                <a-button
+                  type="primary"
+                  size="small"
+                >
+                  {{ 'Install' | i18n }}
+                </a-button>
+              </a-popconfirm>
+            </a-list-item>
+          </a-list>
+        </div>
+      </a-spin>
+    </a-modal>
+  </div>
 </template>
 
 <script lang="ts">
