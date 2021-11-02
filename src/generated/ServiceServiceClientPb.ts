@@ -13,9 +13,9 @@
 
 import * as grpcWeb from 'grpc-web';
 
+import * as Repo_pb from './Repo_pb';
 import * as Common_pb from './Common_pb';
 import * as Game_pb from './Game_pb';
-import * as Repo_pb from './Repo_pb';
 import * as Service_pb from './Service_pb';
 
 
@@ -38,7 +38,10 @@ export class ModManagerServiceClient {
     this.options_ = options;
   }
 
-  methodInfoListGames = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoListGames = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/ListGames',
+    grpcWeb.MethodType.UNARY,
+    Game_pb.ListGamesRequest,
     Game_pb.ListGamesResponse,
     (request: Game_pb.ListGamesRequest) => {
       return request.serializeBinary();
@@ -53,13 +56,13 @@ export class ModManagerServiceClient {
   listGames(
     request: Game_pb.ListGamesRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
+    callback: (err: grpcWeb.RpcError,
                response: Game_pb.ListGamesResponse) => void): grpcWeb.ClientReadableStream<Game_pb.ListGamesResponse>;
 
   listGames(
     request: Game_pb.ListGamesRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
+    callback?: (err: grpcWeb.RpcError,
                response: Game_pb.ListGamesResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
@@ -78,7 +81,10 @@ export class ModManagerServiceClient {
     this.methodInfoListGames);
   }
 
-  methodInfoInstallBIE = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoInstallBIE = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/InstallBIE',
+    grpcWeb.MethodType.UNARY,
+    Game_pb.InstallBIERequest,
     Common_pb.CommonServiceResponse,
     (request: Game_pb.InstallBIERequest) => {
       return request.serializeBinary();
@@ -93,13 +99,13 @@ export class ModManagerServiceClient {
   installBIE(
     request: Game_pb.InstallBIERequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
+    callback: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   installBIE(
     request: Game_pb.InstallBIERequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
+    callback?: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
@@ -118,7 +124,10 @@ export class ModManagerServiceClient {
     this.methodInfoInstallBIE);
   }
 
-  methodInfoUninstallBIE = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoUninstallBIE = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/UninstallBIE',
+    grpcWeb.MethodType.UNARY,
+    Game_pb.UninstallBIERequest,
     Common_pb.CommonServiceResponse,
     (request: Game_pb.UninstallBIERequest) => {
       return request.serializeBinary();
@@ -133,13 +142,13 @@ export class ModManagerServiceClient {
   uninstallBIE(
     request: Game_pb.UninstallBIERequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
+    callback: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   uninstallBIE(
     request: Game_pb.UninstallBIERequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
+    callback?: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
@@ -158,7 +167,10 @@ export class ModManagerServiceClient {
     this.methodInfoUninstallBIE);
   }
 
-  methodInfoCheckPluginUpdates = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoCheckPluginUpdates = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/CheckPluginUpdates',
+    grpcWeb.MethodType.UNARY,
+    Repo_pb.CheckPluginUpdatesRequest,
     Common_pb.CommonServiceResponse,
     (request: Repo_pb.CheckPluginUpdatesRequest) => {
       return request.serializeBinary();
@@ -173,13 +185,13 @@ export class ModManagerServiceClient {
   checkPluginUpdates(
     request: Repo_pb.CheckPluginUpdatesRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
+    callback: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   checkPluginUpdates(
     request: Repo_pb.CheckPluginUpdatesRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
+    callback?: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
@@ -198,7 +210,10 @@ export class ModManagerServiceClient {
     this.methodInfoCheckPluginUpdates);
   }
 
-  methodInfoListPlugins = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoListPlugins = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/ListPlugins',
+    grpcWeb.MethodType.UNARY,
+    Repo_pb.ListPluginsRequest,
     Repo_pb.ListPluginsResponse,
     (request: Repo_pb.ListPluginsRequest) => {
       return request.serializeBinary();
@@ -213,13 +228,13 @@ export class ModManagerServiceClient {
   listPlugins(
     request: Repo_pb.ListPluginsRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
+    callback: (err: grpcWeb.RpcError,
                response: Repo_pb.ListPluginsResponse) => void): grpcWeb.ClientReadableStream<Repo_pb.ListPluginsResponse>;
 
   listPlugins(
     request: Repo_pb.ListPluginsRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
+    callback?: (err: grpcWeb.RpcError,
                response: Repo_pb.ListPluginsResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
@@ -238,7 +253,10 @@ export class ModManagerServiceClient {
     this.methodInfoListPlugins);
   }
 
-  methodInfoAddPluginToRepo = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoAddPluginToRepo = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/AddPluginToRepo',
+    grpcWeb.MethodType.UNARY,
+    Repo_pb.AddPluginToRepoRequest,
     Common_pb.CommonServiceResponse,
     (request: Repo_pb.AddPluginToRepoRequest) => {
       return request.serializeBinary();
@@ -253,13 +271,13 @@ export class ModManagerServiceClient {
   addPluginToRepo(
     request: Repo_pb.AddPluginToRepoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
+    callback: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   addPluginToRepo(
     request: Repo_pb.AddPluginToRepoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
+    callback?: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
@@ -278,7 +296,10 @@ export class ModManagerServiceClient {
     this.methodInfoAddPluginToRepo);
   }
 
-  methodInfoInstallPlugin = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoInstallPlugin = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/InstallPlugin',
+    grpcWeb.MethodType.UNARY,
+    Repo_pb.InstallPluginRequest,
     Common_pb.CommonServiceResponse,
     (request: Repo_pb.InstallPluginRequest) => {
       return request.serializeBinary();
@@ -293,13 +314,13 @@ export class ModManagerServiceClient {
   installPlugin(
     request: Repo_pb.InstallPluginRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
+    callback: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   installPlugin(
     request: Repo_pb.InstallPluginRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
+    callback?: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
@@ -318,7 +339,10 @@ export class ModManagerServiceClient {
     this.methodInfoInstallPlugin);
   }
 
-  methodInfoUninstallPlugin = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoUninstallPlugin = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/UninstallPlugin',
+    grpcWeb.MethodType.UNARY,
+    Repo_pb.UninstallPluginRequest,
     Common_pb.CommonServiceResponse,
     (request: Repo_pb.UninstallPluginRequest) => {
       return request.serializeBinary();
@@ -333,13 +357,13 @@ export class ModManagerServiceClient {
   uninstallPlugin(
     request: Repo_pb.UninstallPluginRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
+    callback: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   uninstallPlugin(
     request: Repo_pb.UninstallPluginRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
+    callback?: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
@@ -358,7 +382,10 @@ export class ModManagerServiceClient {
     this.methodInfoUninstallPlugin);
   }
 
-  methodInfoReadConfig = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoReadConfig = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/ReadConfig',
+    grpcWeb.MethodType.UNARY,
+    Repo_pb.ReadConfigRequest,
     Repo_pb.ReadConfigResponse,
     (request: Repo_pb.ReadConfigRequest) => {
       return request.serializeBinary();
@@ -373,13 +400,13 @@ export class ModManagerServiceClient {
   readConfig(
     request: Repo_pb.ReadConfigRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
+    callback: (err: grpcWeb.RpcError,
                response: Repo_pb.ReadConfigResponse) => void): grpcWeb.ClientReadableStream<Repo_pb.ReadConfigResponse>;
 
   readConfig(
     request: Repo_pb.ReadConfigRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
+    callback?: (err: grpcWeb.RpcError,
                response: Repo_pb.ReadConfigResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
@@ -398,7 +425,10 @@ export class ModManagerServiceClient {
     this.methodInfoReadConfig);
   }
 
-  methodInfoWriteConfig = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoWriteConfig = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/WriteConfig',
+    grpcWeb.MethodType.UNARY,
+    Repo_pb.WriteConfigRequest,
     Common_pb.CommonServiceResponse,
     (request: Repo_pb.WriteConfigRequest) => {
       return request.serializeBinary();
@@ -413,13 +443,13 @@ export class ModManagerServiceClient {
   writeConfig(
     request: Repo_pb.WriteConfigRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
+    callback: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   writeConfig(
     request: Repo_pb.WriteConfigRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
+    callback?: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
@@ -438,7 +468,10 @@ export class ModManagerServiceClient {
     this.methodInfoWriteConfig);
   }
 
-  methodInfoAddGame = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoAddGame = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/AddGame',
+    grpcWeb.MethodType.UNARY,
+    Repo_pb.AddGameRequest,
     Common_pb.CommonServiceResponse,
     (request: Repo_pb.AddGameRequest) => {
       return request.serializeBinary();
@@ -453,13 +486,13 @@ export class ModManagerServiceClient {
   addGame(
     request: Repo_pb.AddGameRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
+    callback: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void): grpcWeb.ClientReadableStream<Common_pb.CommonServiceResponse>;
 
   addGame(
     request: Repo_pb.AddGameRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
+    callback?: (err: grpcWeb.RpcError,
                response: Common_pb.CommonServiceResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
@@ -478,7 +511,10 @@ export class ModManagerServiceClient {
     this.methodInfoAddGame);
   }
 
-  methodInfoLongConnect = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoLongConnect = new grpcWeb.MethodDescriptor(
+    '/BepInEx.ModManagerService/LongConnect',
+    grpcWeb.MethodType.SERVER_STREAMING,
+    Service_pb.LongConnectRequest,
     Service_pb.LongConnectResponse,
     (request: Service_pb.LongConnectRequest) => {
       return request.serializeBinary();

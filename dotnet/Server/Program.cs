@@ -48,7 +48,7 @@ namespace BepInEx.ModManager.Server
             }
             else // CLI mode
             {
-                //await ModManagerServiceImpl.GetGamesAsync().ConfigureAwait(false);
+                await ModManagerServiceImpl.GetGamesAsync().ConfigureAwait(false);
                 await Repo.AddonRepoManager.Instance.UpdateBucketsAsync().ConfigureAwait(false);
             }
         }
