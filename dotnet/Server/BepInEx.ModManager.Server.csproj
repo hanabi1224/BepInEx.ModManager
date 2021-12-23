@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net5</TargetFramework>
+    <TargetFramework>net6</TargetFramework>
     <OutputType>Exe</OutputType>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
@@ -12,7 +12,7 @@
     <PackageReference Include="NLog.Schema" Version="4.*" PrivateAssets="all" />
     <PackageReference Include="System.Drawing.Common" Version="5.*" />
     <PackageReference Include="YamlDotNet" Version="11.*" />
-    <PackageReference Include="System.CommandLine.DragonFruit" Version="0.3.0-alpha.*" />
+    <PackageReference Include="System.CommandLine.DragonFruit" Version="0.4.0-alpha.*" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.*" />
     <PackageReference Include="NuGet.Versioning" Version="5.*" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.*" />
