@@ -12,6 +12,6 @@ if (fs.existsSync(destDir)) {
 fs.mkdirSync(destDir);
 protoDirEntries.forEach(function (entry) {
     console.log(entry);
-    var args = "-I ./protos ./protos/" + entry + " --js_out=import_style=commonjs:" + destDir + " --grpc-web_out=import_style=typescript,mode=grpcwebtext:./src/generated/";
+    var args = "-I ./protos ./protos/".concat(entry, " --js_out=import_style=commonjs:").concat(destDir, " --grpc-web_out=import_style=typescript,mode=grpcwebtext:./src/generated/");
     (0, child_process_1.spawn)('protoc', args.split(' '));
 });

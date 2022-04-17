@@ -1,3 +1,8 @@
+## 0.1.8
+
+- Upgrade bundled BepInEx to 5.4.19
+- Upgrade electron to 18.x
+
 ## 0.1.7
 
 - Upgrade bundled BepInEx to 5.4.14

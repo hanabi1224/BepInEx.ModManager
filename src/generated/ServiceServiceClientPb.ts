@@ -38,7 +38,7 @@ export class ModManagerServiceClient {
     this.options_ = options;
   }
 
-  methodInfoListGames = new grpcWeb.MethodDescriptor(
+  methodDescriptorListGames = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/ListGames',
     grpcWeb.MethodType.UNARY,
     Game_pb.ListGamesRequest,
@@ -70,7 +70,7 @@ export class ModManagerServiceClient {
           '/BepInEx.ModManagerService/ListGames',
         request,
         metadata || {},
-        this.methodInfoListGames,
+        this.methodDescriptorListGames,
         callback);
     }
     return this.client_.unaryCall(
@@ -78,10 +78,10 @@ export class ModManagerServiceClient {
       '/BepInEx.ModManagerService/ListGames',
     request,
     metadata || {},
-    this.methodInfoListGames);
+    this.methodDescriptorListGames);
   }
 
-  methodInfoInstallBIE = new grpcWeb.MethodDescriptor(
+  methodDescriptorInstallBIE = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/InstallBIE',
     grpcWeb.MethodType.UNARY,
     Game_pb.InstallBIERequest,
@@ -113,7 +113,7 @@ export class ModManagerServiceClient {
           '/BepInEx.ModManagerService/InstallBIE',
         request,
         metadata || {},
-        this.methodInfoInstallBIE,
+        this.methodDescriptorInstallBIE,
         callback);
     }
     return this.client_.unaryCall(
@@ -121,10 +121,10 @@ export class ModManagerServiceClient {
       '/BepInEx.ModManagerService/InstallBIE',
     request,
     metadata || {},
-    this.methodInfoInstallBIE);
+    this.methodDescriptorInstallBIE);
   }
 
-  methodInfoUninstallBIE = new grpcWeb.MethodDescriptor(
+  methodDescriptorUninstallBIE = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/UninstallBIE',
     grpcWeb.MethodType.UNARY,
     Game_pb.UninstallBIERequest,
@@ -156,7 +156,7 @@ export class ModManagerServiceClient {
           '/BepInEx.ModManagerService/UninstallBIE',
         request,
         metadata || {},
-        this.methodInfoUninstallBIE,
+        this.methodDescriptorUninstallBIE,
         callback);
     }
     return this.client_.unaryCall(
@@ -164,10 +164,10 @@ export class ModManagerServiceClient {
       '/BepInEx.ModManagerService/UninstallBIE',
     request,
     metadata || {},
-    this.methodInfoUninstallBIE);
+    this.methodDescriptorUninstallBIE);
   }
 
-  methodInfoCheckPluginUpdates = new grpcWeb.MethodDescriptor(
+  methodDescriptorCheckPluginUpdates = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/CheckPluginUpdates',
     grpcWeb.MethodType.UNARY,
     Repo_pb.CheckPluginUpdatesRequest,
@@ -199,7 +199,7 @@ export class ModManagerServiceClient {
           '/BepInEx.ModManagerService/CheckPluginUpdates',
         request,
         metadata || {},
-        this.methodInfoCheckPluginUpdates,
+        this.methodDescriptorCheckPluginUpdates,
         callback);
     }
     return this.client_.unaryCall(
@@ -207,10 +207,10 @@ export class ModManagerServiceClient {
       '/BepInEx.ModManagerService/CheckPluginUpdates',
     request,
     metadata || {},
-    this.methodInfoCheckPluginUpdates);
+    this.methodDescriptorCheckPluginUpdates);
   }
 
-  methodInfoListPlugins = new grpcWeb.MethodDescriptor(
+  methodDescriptorListPlugins = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/ListPlugins',
     grpcWeb.MethodType.UNARY,
     Repo_pb.ListPluginsRequest,
@@ -242,7 +242,7 @@ export class ModManagerServiceClient {
           '/BepInEx.ModManagerService/ListPlugins',
         request,
         metadata || {},
-        this.methodInfoListPlugins,
+        this.methodDescriptorListPlugins,
         callback);
     }
     return this.client_.unaryCall(
@@ -250,10 +250,10 @@ export class ModManagerServiceClient {
       '/BepInEx.ModManagerService/ListPlugins',
     request,
     metadata || {},
-    this.methodInfoListPlugins);
+    this.methodDescriptorListPlugins);
   }
 
-  methodInfoAddPluginToRepo = new grpcWeb.MethodDescriptor(
+  methodDescriptorAddPluginToRepo = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/AddPluginToRepo',
     grpcWeb.MethodType.UNARY,
     Repo_pb.AddPluginToRepoRequest,
@@ -285,7 +285,7 @@ export class ModManagerServiceClient {
           '/BepInEx.ModManagerService/AddPluginToRepo',
         request,
         metadata || {},
-        this.methodInfoAddPluginToRepo,
+        this.methodDescriptorAddPluginToRepo,
         callback);
     }
     return this.client_.unaryCall(
@@ -293,10 +293,10 @@ export class ModManagerServiceClient {
       '/BepInEx.ModManagerService/AddPluginToRepo',
     request,
     metadata || {},
-    this.methodInfoAddPluginToRepo);
+    this.methodDescriptorAddPluginToRepo);
   }
 
-  methodInfoInstallPlugin = new grpcWeb.MethodDescriptor(
+  methodDescriptorInstallPlugin = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/InstallPlugin',
     grpcWeb.MethodType.UNARY,
     Repo_pb.InstallPluginRequest,
@@ -328,7 +328,7 @@ export class ModManagerServiceClient {
           '/BepInEx.ModManagerService/InstallPlugin',
         request,
         metadata || {},
-        this.methodInfoInstallPlugin,
+        this.methodDescriptorInstallPlugin,
         callback);
     }
     return this.client_.unaryCall(
@@ -336,10 +336,10 @@ export class ModManagerServiceClient {
       '/BepInEx.ModManagerService/InstallPlugin',
     request,
     metadata || {},
-    this.methodInfoInstallPlugin);
+    this.methodDescriptorInstallPlugin);
   }
 
-  methodInfoUninstallPlugin = new grpcWeb.MethodDescriptor(
+  methodDescriptorUninstallPlugin = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/UninstallPlugin',
     grpcWeb.MethodType.UNARY,
     Repo_pb.UninstallPluginRequest,
@@ -371,7 +371,7 @@ export class ModManagerServiceClient {
           '/BepInEx.ModManagerService/UninstallPlugin',
         request,
         metadata || {},
-        this.methodInfoUninstallPlugin,
+        this.methodDescriptorUninstallPlugin,
         callback);
     }
     return this.client_.unaryCall(
@@ -379,10 +379,10 @@ export class ModManagerServiceClient {
       '/BepInEx.ModManagerService/UninstallPlugin',
     request,
     metadata || {},
-    this.methodInfoUninstallPlugin);
+    this.methodDescriptorUninstallPlugin);
   }
 
-  methodInfoReadConfig = new grpcWeb.MethodDescriptor(
+  methodDescriptorReadConfig = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/ReadConfig',
     grpcWeb.MethodType.UNARY,
     Repo_pb.ReadConfigRequest,
@@ -414,7 +414,7 @@ export class ModManagerServiceClient {
           '/BepInEx.ModManagerService/ReadConfig',
         request,
         metadata || {},
-        this.methodInfoReadConfig,
+        this.methodDescriptorReadConfig,
         callback);
     }
     return this.client_.unaryCall(
@@ -422,10 +422,10 @@ export class ModManagerServiceClient {
       '/BepInEx.ModManagerService/ReadConfig',
     request,
     metadata || {},
-    this.methodInfoReadConfig);
+    this.methodDescriptorReadConfig);
   }
 
-  methodInfoWriteConfig = new grpcWeb.MethodDescriptor(
+  methodDescriptorWriteConfig = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/WriteConfig',
     grpcWeb.MethodType.UNARY,
     Repo_pb.WriteConfigRequest,
@@ -457,7 +457,7 @@ export class ModManagerServiceClient {
           '/BepInEx.ModManagerService/WriteConfig',
         request,
         metadata || {},
-        this.methodInfoWriteConfig,
+        this.methodDescriptorWriteConfig,
         callback);
     }
     return this.client_.unaryCall(
@@ -465,10 +465,10 @@ export class ModManagerServiceClient {
       '/BepInEx.ModManagerService/WriteConfig',
     request,
     metadata || {},
-    this.methodInfoWriteConfig);
+    this.methodDescriptorWriteConfig);
   }
 
-  methodInfoAddGame = new grpcWeb.MethodDescriptor(
+  methodDescriptorAddGame = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/AddGame',
     grpcWeb.MethodType.UNARY,
     Repo_pb.AddGameRequest,
@@ -500,7 +500,7 @@ export class ModManagerServiceClient {
           '/BepInEx.ModManagerService/AddGame',
         request,
         metadata || {},
-        this.methodInfoAddGame,
+        this.methodDescriptorAddGame,
         callback);
     }
     return this.client_.unaryCall(
@@ -508,10 +508,10 @@ export class ModManagerServiceClient {
       '/BepInEx.ModManagerService/AddGame',
     request,
     metadata || {},
-    this.methodInfoAddGame);
+    this.methodDescriptorAddGame);
   }
 
-  methodInfoLongConnect = new grpcWeb.MethodDescriptor(
+  methodDescriptorLongConnect = new grpcWeb.MethodDescriptor(
     '/BepInEx.ModManagerService/LongConnect',
     grpcWeb.MethodType.SERVER_STREAMING,
     Service_pb.LongConnectRequest,
@@ -524,13 +524,13 @@ export class ModManagerServiceClient {
 
   longConnect(
     request: Service_pb.LongConnectRequest,
-    metadata?: grpcWeb.Metadata) {
+    metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<Service_pb.LongConnectResponse> {
     return this.client_.serverStreaming(
       this.hostname_ +
         '/BepInEx.ModManagerService/LongConnect',
       request,
       metadata || {},
-      this.methodInfoLongConnect);
+      this.methodDescriptorLongConnect);
   }
 
 }
